@@ -1,5 +1,5 @@
-length_sheet = 0
-width_sheet = 0
+#length_sheet = 0
+#width_sheet = 0
 
 def horizontal_distance(px, py, x11, y11, x22, y22):  # Main function to determine the horizontal distance
     if (py < y11 and py < y22) or (py > y11 and py > y22):
