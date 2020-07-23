@@ -26,4 +26,5 @@ __3. Nesting of Shapes:__
 <img src="https://github.com/Harsheel15/modules-for-laser-cutting/blob/master/img/nested_shape_1.jpeg" width="250" height="250"> <img src="https://github.com/Harsheel15/modules-for-laser-cutting/blob/master/img/nested_shape_2.jpeg" width="250" height="250"> <img src="https://github.com/Harsheel15/modules-for-laser-cutting/blob/master/img/nested_shape_5.jpeg" width="250" height="250">
 
 __Flowchart for the modules created presently:__  
+<img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/flow_chart.png">
 
