@@ -21,7 +21,7 @@ __3. Nesting of Shapes:__
 > i) The shapes get automatically nested once we provide the coordinates of the shapes which are entered.  More about the nesting is available below.
 > ii) Nesting is inspired from the following approaches:
 >> a) Bottom-Left approach
->> b) DJD Heuristic approach
+>> b) DJD Heuristic approach  
 **Here are the images of nested shapes:**  
 <img src="https://github.com/Harsheel15/modules-for-laser-cutting/blob/master/img/nested_shape_1.jpeg" width="250" height="250"> <img src="https://github.com/Harsheel15/modules-for-laser-cutting/blob/master/img/nested_shape_2.jpeg" width="250" height="250"> <img src="https://github.com/Harsheel15/modules-for-laser-cutting/blob/master/img/nested_shape_5.jpeg" width="250" height="250">
 
