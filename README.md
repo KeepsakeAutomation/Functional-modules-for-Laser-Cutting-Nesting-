@@ -18,7 +18,7 @@ __2. Detection of shapes from a .svg file or any image(.png, jpeg or tiff) file 
 > ii) After the detection of shapes from an image, the coordinates of the detected shapes are fetched .
 
 __3. Nesting of Shapes:__  
-> i) The shapes get automatically nested once we provide the coordinates of the shapes which are entered.  More about the nesting is available below.
+> i) The shapes get automatically nested once we provide the coordinates of the shapes which are entered.  More about the nesting is available below.  
 > ii) Nesting is inspired from the following approaches:
 >> a) Bottom-Left approach
 >> b) DJD Heuristic approach  
