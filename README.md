@@ -1,12 +1,17 @@
-# Nesting
-LJ Teams
+# 																											Modules for Laser Cutting
+This is a repository containing certain modules required for laser cutting.
+Following are the modules currently present:  
+**1. Formation of Shapes**  
+**2. Nesting of Shapes**  
+**3. Path-planning & the options of lead-in and lead-out**  
+**4. Conversion of machine code**  
 
-Steps to run the Final Code:
+__Formation of Shapes:__  
+> i) The dimensions of shapes are to be entered to the python code.  
+> ii) The code forms the shape and gives the output in the form of coordinates.  
 
-1) Our main code is Final_code_with_imported_functions.py.
-2) We need to have all of the other codes on our PC as they have the functions required to run our final code.
-3) So, once you have all of the codes with you on your PC, simply run Final_code_with_imported_functions.py.
-4) You will need to enter the size of the sheet as prompted. You will be asked to enter the number of shapes you want to enter as well as the type of shape will be asked turn-by-turn.
-5) Enter the shapes as per your wish and once you do that, the code will give the coordinates of the nested shapes.
-6) After getting the coordinates, you need to enter them in Nested_Shape_Visualisation.FCMacro. An example is already present in the file. You need to separate the lists of coordinates and label them as given in the code. Also, you need to change the values in the sheet with the value you have entered.
-7) Once you run/execute the macro, it will show the nested shapes and the sheet.
+__Nesting of Shapes:__  
+> i) The shapes get automatically nested once we provide the coordinates of the shapes which are entered.  
+**Here are the images of nested shapes:**  
+<img src="https://github.com/Harsheel15/modules-for-laser-cutting/blob/master/img/nested_shape_3.jpeg" width="250" height="250"> <img src="https://github.com/Harsheel15/modules-for-laser-cutting/blob/master/img/nested_shape_1.jpeg" width="250" height="250"> <img src="https://github.com/Harsheel15/modules-for-laser-cutting/blob/master/img/nested_shape_2.jpeg" width="250" height="250"> <img src="https://github.com/Harsheel15/modules-for-laser-cutting/blob/master/img/nested_shape_4.jpeg" width="250" height="250"> <img src="https://github.com/Harsheel15/modules-for-laser-cutting/blob/master/img/nested_shape_5.jpeg" width="250" height="250">
+
