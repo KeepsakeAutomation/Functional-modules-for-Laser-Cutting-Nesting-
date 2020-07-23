@@ -2,7 +2,7 @@
 This is a repository containing certain modules required for laser cutting. The code is completely written in python.  
 Following are the modules currently present:  
 **1. Formation of Shapes**  
-**2. Detection of shapes from a .svg file or any image(.png, .jpeg or .tiff) file format**
+**2. Detection of shapes from a .svg file or any image(.png, .jpeg or .tiff) file format**  
 **3. Nesting of Shapes**  
 Following are the modules to be added:  
 **3. Path-planning & the options of lead-in and lead-out**  
