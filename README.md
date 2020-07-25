@@ -23,7 +23,7 @@ __3. Nesting of Shapes:__
 >> a) Bottom-Left approach
 >> b) DJD Heuristic approach  
 **Here are the images of nested shapes:**  
-<img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/fun_nested.PNG" width="250" height="250"> <img src="https://github.com/Harsheel15/modules-for-laser-cutting/blob/master/img/nested_shape_2.jpeg" width="250" height="250"> <img src="https://github.com/Harsheel15/modules-for-laser-cutting/blob/master/img/nested_shape_5.jpeg" width="250" height="250">
+<img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/fun_nested.PNG" width="250" height="250"> <img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/nested_ganesh.PNG" width="250" height="250"> <img src="https://github.com/Harsheel15/modules-for-laser-cutting/blob/master/img/nested_shape_5.jpeg" width="250" height="250">
 
 __Flowchart for the modules created presently:__  
 <img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/flow_chart.png">
