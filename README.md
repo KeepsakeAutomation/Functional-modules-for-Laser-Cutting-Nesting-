@@ -10,7 +10,7 @@ Following are the modules to be added:
 
 ## **Brief:**  
 ###  __1. Formation of Shapes:__  
-> i) The dimensions of shapes are to be entered as the input in the code.
+> i) The dimensions of shapes are to be entered as the input in the code.  
 > ii) The code forms the shape by doing simple mathematical calculations and gives the output in the form of coordinates.  
 
 ### __2. Detection of shapes from a .svg file or any image(.png, jpeg or tiff) file format__
