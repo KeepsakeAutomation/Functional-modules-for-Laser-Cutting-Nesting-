@@ -32,3 +32,5 @@ __These are the images depicting contour detection in the cases of images given 
 <img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/flow_chart.png">  
 __2) Flow chart for nesting of the extracted coordinates:__  
 <img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/Flow_chart_2.png">  
+__3) Flow Chart for Contour Detection from an image to extraction shape coordinates:__  
+<img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/Flow_chart_3.png">  
