@@ -18,7 +18,7 @@ Following are the modules to be added:
 > ii) After the detection of shapes from an image, the coordinates of the detected shapes are fetched.  
 
 ### __3. Nesting of Shapes:__  
-> i) The shapes get automatically nested once we provide the coordinates of the shapes which are entered.  More about the nesting is available below.  
+> i) The shapes get automatically nested once we provide the coordinates of the shapes which are entered.  More about the nesting is available below in the form of a flowchart.  
 > ii) Nesting is inspired from the following approaches:
 a) Bottom-Left approach b) DJD Heuristic approach  
 
