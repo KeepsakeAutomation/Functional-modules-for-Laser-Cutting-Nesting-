@@ -20,8 +20,7 @@ Following are the modules to be added:
 ### __3. Nesting of Shapes:__  
 > i) The shapes get automatically nested once we provide the coordinates of the shapes which are entered.  More about the nesting is available below.  
 > ii) Nesting is inspired from the following approaches:
->> a) Bottom-Left approach
->> b) DJD Heuristic approach  
+a) Bottom-Left approach b) DJD Heuristic approach  
 **__Here are the images of nested shapes:__**  
 <img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/fun_nested.PNG" width="250" height="250"> <img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/nested_ganesh.PNG" width="250" height="250"> <img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/random_shapes.PNG" width="250" height="250">  
 **__These are the images depicting contour detection in the cases of images given as inputs:__**
