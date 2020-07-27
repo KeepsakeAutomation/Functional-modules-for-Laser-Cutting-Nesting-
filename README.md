@@ -25,10 +25,12 @@ a) Bottom-Left approach b) DJD Heuristic approach
 __Here are the images of nested shapes:__  
 <img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/fun_nested.PNG" width="250" height="250"> <img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/nested_ganesh.PNG" width="250" height="250"> <img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/random_shapes.PNG" width="250" height="250">  
 __These are the images depicting contour detection in the cases of images given as inputs:__  
-<p align="right">
+<p align="center">
 <img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/shapes_edge.png" width="400" height="300"> 
  </p>
+ <p align="left">
  <img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/ganesh_edge.png" width="500" height="250"> <img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/triangle_edge.png" width="500" height="250">
+ </p>
 
 ### Flowchart for the modules created presently:  
  __1) Flow chart for extraction of coordinates and/or creation of shapes:__    
