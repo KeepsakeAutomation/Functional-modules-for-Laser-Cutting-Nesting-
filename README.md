@@ -26,5 +26,7 @@ __3. Nesting of Shapes:__
 <img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/fun_nested.PNG" width="250" height="250"> <img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/nested_ganesh.PNG" width="250" height="250"> <img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/random_shapes.PNG" width="250" height="250">
 
 __Flowchart for the modules created presently:__  
+> 1) Flow chart for extraction of coordinates and/or creation of shapes:  
 <img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/flow_chart.png">  
+> 2) Flow chart for nesting of the extracted coordinates:
 <img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/Flow_chart_2.png">  
