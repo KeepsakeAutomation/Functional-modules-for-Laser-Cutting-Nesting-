@@ -41,3 +41,8 @@ __3) Flow Chart for Contour Detection from an image to extraction shape coordina
 <p align="center">
 <img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/Flow_chart_3.png">  
  </p>
+
+To-do list:  
+1. Optimisation of nesting by adding more functions for distances  
+2. Creating the library for the nesting code  
+3. Adding the compatibility for concave shapes  
