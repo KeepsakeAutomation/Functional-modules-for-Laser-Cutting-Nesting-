@@ -19,7 +19,7 @@ Following are the modules to be added:
 
 ### __3. Nesting of Shapes:__  
 > i) The shapes get automatically nested once we provide the coordinates of the shapes which are entered.  More about the nesting is available below in the form of a flowchart.  
-> ii) Nesting is inspired from the following approaches:
+> ii) Nesting is a combination of the following approaches:
 a) Bottom-Left approach b) DJD Heuristic approach  
 
 __Here are the images of nested shapes:__  
