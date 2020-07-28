@@ -1,0 +1,1417 @@
+#---------------------------------------------------------------------------------------------------------------#
+# MAIN CODE FOR CREATING THE SHAPES AS WELL AS NESTING THOSE SHAPES
+# ---------------------------------------------------------------------------------------------------------------#
+
+# ---------------------------------------------------------------------------------------------------------------#
+# Brief: The code takes the user input by taking the dimensions of the shapes and nests those shapes into a sheet in the best way possible.
+
+# Importing the required libraries
+import time
+import cv2
+import matplotlib.pyplot as plt
+from svglib.svglib import svg2rlg
+from reportlab.graphics import renderPM
+from math import sqrt, sin, cos, pi, asin
+
+
+# ---------------------------------------------------------------------------------------------------------------#
+
+# All of the required functions at one place
+def horizontal_checking(list_shape1):
+    right_x1 = 0
+    left_x1 = 0
+    for x1 in range(len(list_shape1)):  # Get the lowest y-coordinate of shape-1
+        if x1 == 0:  # Get the highest y-coordinate of shape-1
+            right_x1 = list_shape1[x1][0]
+            a = list_shape1[0 + int(x1)]
+            left_x1 = list_shape1[x1][0]
+            b = list_shape1[0 + int(x1)]
+        else:
+            if list_shape1[x1][0] == right_x1:
+                if list_shape1[x1][1] < a[1]:
+                    a = list_shape1[0 + int(x1)]
+            if list_shape1[x1][0] > right_x1:
+                right_x1 = list_shape1[x1][0]
+                a = list_shape1[0 + int(x1)]
+            if list_shape1[x1][0] == left_x1:
+                if list_shape1[x1][1] < b[1]:
+                    b = list_shape1[0 + int(x1)]
+            if list_shape1[x1][0] < left_x1:
+                left_x1 = list_shape1[x1][0]
+                b = list_shape1[0 + int(x1)]
+    return b, a
+
+
+def clockwise_list(list_shape2):
+    j = 0
+    list_shape1 = []
+    for i in range(len(list_shape2)):  # Check => shape co-ordinates are clockwise or anti-clockwise
+        if i != len(list_shape2) - 1:
+            j = j + ((list_shape2[i + 1][0] - list_shape2[i][0]) * (list_shape2[i + 1][1] + list_shape2[i][1]))
+        else:
+            j = j + ((list_shape2[i][0] - list_shape2[0][0]) * (list_shape2[i][1] + list_shape2[0][1]))
+    if j > 0:  # If shape co-ordinates are anti-clockwise then arrange it in clockwise
+        list_shape1 = list_shape2
+    else:
+        for i in range(len(list_shape2)):
+            list_shape1.append(
+                list_shape2[len(list_shape2) - 1 - i])  # list_shape1 = clockwise arrangement of co-ordinates
+    return list_shape1
+
+
+def area_at_the_bottom_of_given_piece(list_shape1, x, y):
+    list = []
+    list1 = [x, (x[0], 0), (y[0], 0)]
+    for i in range(len(list_shape1)):  # Fatching coordinates between leftmost high and leftmost low co-ordinates
+        if list_shape1[i] == y:
+            while i <= len(list_shape1):
+                list.append(list_shape1[i])
+                if list_shape1[i] == x:
+                    break
+                elif list_shape1[i] != x and i == len(list_shape1) - 1:
+                    for j in range(len(list_shape1)):
+                        if list_shape1 != x:
+                            list.append(list_shape1[j])
+                        if list_shape1[j] == x:
+                            break
+                    break
+                i += 1
+    for i in range(len(list) - 1):
+        list1.append(list[i])
+    return list1
+
+
+x, y = (6, 7)
+x1, y1 = (7, 6)  # segment terminal point-1
+x2, y2 = (5, 6)  # segment terminal point-2
+
+
+def vertical_distance(px, py, x11, y11, x22, y22):  # Main function to determine the horizontal distance
+    if (px < x11 and px < x22) or (px > x11 and px > x22):
+        a = length_sheet  # "The point does not reach horizontally the segment"
+        return a
+    if (px == x11 and px == x22) and (py > y11 and py > y22):
+        a = min(py - y11, py - y22)
+        return a
+    if (px == x11 and px == x22) and (py < y11 and py < y22):
+        a = -(min((y11 - py), (y22 - py)))
+        return a
+    if (px == x11 and px == x22):
+        a = 0
+        return a
+    else:
+        a = py - y11 + (y11 - y22) * (x11 - px) / (x11 - x22)
+        return a
+
+
+def vertical_checking(list_shape1):
+    high_y1 = 0
+    low_y1 = 0
+    for y1 in range(len(list_shape1)):  # Get the lowest y-coordinate of shape-1
+        if y1 == 0:  # Get the highest y-coordinate of shape-1
+            high_y1 = list_shape1[y1][1]
+            a = list_shape1[0 + int(y1)]
+            low_y1 = list_shape1[y1][1]
+            b = list_shape1[0 + int(y1)]
+        else:
+            if list_shape1[y1][1] == high_y1:
+                if list_shape1[y1][0] < a[0]:
+                    a = list_shape1[0 + int(y1)]
+            if list_shape1[y1][1] > high_y1:
+                high_y1 = list_shape1[y1][1]
+                a = list_shape1[0 + int(y1)]
+            if list_shape1[y1][1] == low_y1:
+                if list_shape1[y1][0] < b[0]:
+                    b = list_shape1[0 + int(y1)]
+            if list_shape1[y1][1] < low_y1:
+                low_y1 = list_shape1[y1][1]
+                b = list_shape1[0 + int(y1)]
+    return b, a
+
+
+def area_at_the_left_of_given_piece(list_shape1, x, y):
+    list = []
+    list1 = [y, (0, y[1]), (0, x[1])]
+    for i in range(len(list_shape1)):  # Fatchinf co_ordinates between leftmost high and leftmost low co-ordinates
+        if list_shape1[i] == x:
+            while i <= len(list_shape1):
+                list.append(list_shape1[i])
+                if list_shape1[i] == y:
+                    break
+                elif list_shape1[i] != y and i == len(list_shape1) - 1:
+                    for j in range(len(list_shape1)):
+                        if list_shape1 != y:
+                            list.append(list_shape1[j])
+                        if list_shape1[j] == y:
+                            break
+                    break
+                i += 1
+    for i in range(len(list) - 1):
+        list1.append(list[i])
+    return list1
+
+
+def horizontal_distance(px, py, x11, y11, x22, y22):  # Main fubction to determine the horizontal distance
+    if (py < y11 and py < y22) or (py > y11 and py > y22):
+        a = length_sheet  # "The point does not reach horizontally the segment"
+        return a
+    if (py == y11 and py == y22) and (px > x11 and px > x22):
+        a = min(px - x11, px - x22)
+        return a
+    if (py == y11 and py == y22) and (px < x11 and px < x22):
+        a = -(min((x11 - px), (x22 - px)))
+        return a
+    if (py == y11 and py == y22):
+        return 0
+    else:
+        a = px - x11 + (x11 - x22) * (y11 - py) / (y11 - y22)  # x-x1+(x1-x2)(y1-y)/(y1-y2)
+        return a
+
+
+def point_along_side(list, x, y):  # function for (if point is along the side)
+    for i in range(int(len(list))):  # returns "False" if point is along the side
+        if i != (len(list) - 1):
+            if list[i + 1][1] == list[i][1]:
+                if list[i][0] < list[i + 1][0]:
+                    x1 = round(list[i][0], 2)
+                    while round(x1, 2) != round(list[i + 1][0], 2):
+                        x1 = round(x1, 2) + 0.01
+                        if x1 == x and y == list[i][1]:
+                            return False
+                if list[i][0] > list[i + 1][0]:
+                    x1 = round(list[i][0], 2)
+                    while round(x1, 2) != round(list[i + 1][0], 2):
+                        x1 = round(x1, 2) - 0.01
+                        if x1 == x and y == list[i][1]:
+                            return False
+            elif list[i + 1][0] == list[i][0]:
+                if list[i][1] < list[i + 1][1]:
+                    y1 = round(list[i][1], 2)
+                    while round(y1, 2) != round(list[i + 1][1], 2):
+                        y1 = round(y1, 2) + 0.01
+                        if y1 == y and x == list[i][0]:
+                            return False
+                elif list[i][1] > list[i + 1][1]:
+                    y1 = round(list[i][1], 2)
+                    while round(y1, 2) != round(list[i + 1][1], 2):
+                        y1 = round(y1, 2) - 0.01
+                        if y1 == y and x == list[i][0]:
+                            return False
+            if list[i + 1][1] != list[i][1] and list[i + 1][0] != list[i][0]:
+                j1 = list[i][0]
+                list1 = []
+                if list[i][0] < list[i + 1][0]:
+                    while round(j1, 2) != round(list[i + 1][0], 2):
+                        list1.append(round(j1, 2))
+                        j1 = round(j1, 2) + 0.01
+                        list1.append(round(j1, 2))
+                if list[i][0] > list[i + 1][0]:
+                    while round(j1, 2) != round(list[i + 1][0], 2):
+                        list1.append(round(j1, 2))
+                        j1 = round(j1, 2) - 0.01
+                        list1.append(round(j1, 2))
+                m = (list[i + 1][1] - list[i][1]) / (list[i + 1][0] - list[i][0])
+                c = list[i][1] - (m * list[i][0])
+                for i in range(len(list1)):
+                    y1 = (m * list1[i]) + c
+                    if round(y1, 2) == y and list1[i] == x:
+                        return False
+        else:
+            if list[0][1] == list[i][1]:
+                if list[i][0] < list[0][0]:
+                    x1 = round(list[i][0], 2)
+                    while round(x1, 2) != round(list[0][0], 2):
+                        x1 = round(x1, 2) + 0.01
+                        if x1 == x and y == list[i][1]:
+                            return False
+                if list[i][0] > list[0][0]:
+                    x1 = round(list[i][0], 2)
+                    while round(x1, 2) != round(list[0][0], 2):
+                        x1 = round(x1, 2) - 0.01
+                        if x1 == x and y == list[i][1]:
+                            return False
+            if list[0][0] == list[i][0]:
+                if list[i][1] < list[0][1]:
+                    y1 = round(list[i][1], 2)
+                    while round(y1, 2) != round(list[0][1], 2):
+                        y1 = round(y1, 2) + 0.01
+                        if y1 == y and x == list[i][0]:
+                            return False
+                if list[i][1] > list[0][1]:
+                    y1 = round(list[i][1], 2)
+                    while round(y1, 2) != round(list[0][1], 2):
+                        y1 = round(y1, 2) - 0.01
+                        if y1 == y and x == list[i][0]:
+                            return False
+            if list[0][1] != list[i][1] and list[0][0] != list[i][0]:
+                j1 = list[i][0]
+                list1 = []
+                if list[i][0] < list[0][0]:
+                    while round(j1, 2) != round(list[0][0], 2):
+                        list1.append(round(j1, 2))
+                        j1 = round(j1, 2) + 0.01
+                        list1.append(round(j1, 2))
+                if list[i][0] > list[0][0]:
+                    while round(j1, 2) != round(list[0][0], 2):
+                        list1.append(round(j1, 2))
+                        j1 = round(j1, 2) - 0.01
+                        list1.append(round(j1, 2))
+                m = (list[0][1] - list[i][1]) / (list[0][0] - list[i][0])
+                c = list[i][1] - (m * list[i][0])
+                for i in range(len(list1)):
+                    y1 = (m * list1[i]) + c
+                    if y1 == y and list1[i] == x:
+                        return False
+    return True
+
+
+def side_intersects_segment(list_shape, p, x, y):  # function for (if side of shape intresects the segment(x,y),(M,y))
+    count = 0  # returns "number of times the segment intersects the shape" if side of shape intersects the segment
+    j = x
+    list3 = []
+    list3.append(j)
+    c = (x, y)
+    d = (p, y)
+    for e1 in range(len(list_shape)):  # Creates the edges from co-ordinates of shape-1
+        list4 = []
+        if e1 == len(list_shape) - 1:
+            a = list_shape[0 + int(e1)]
+            b = list_shape[0]
+        else:
+            a = list_shape[0 + int(e1)]
+            b = list_shape[1 + int(e1)]
+
+        if closed_segment_intersect(a, b, c, d) == True:  # Checks the condition for intersection
+            count = count + 1
+        while round(j, 2) != round(p, 2):
+            j = round(j, 2) + 0.01
+            list3.append(round(j, 2))
+        for i1 in range(len(list_shape)):
+            for i2 in range(len(list3)):
+                if list_shape[i1][0] == list3[i2] and list_shape[i1][1] == y:
+                    list4.append(list_shape[i1])
+                    count = count + 1
+                    if len(list4) % 2 == 0:
+                        count = count + 1
+
+    if count < 0:
+        count = 0
+        return count
+    else:
+        return count
+
+
+def D_function(list, p, x, y, count):  # function checks (if the point is inside the shape or not using maths formula)
+    j = x  # returns "True" if point is inside the shape
+    list3 = []
+    list4 = []
+    list3.append(j)
+    while round(j, 2) != round(p, 2):
+        j = round(j, 2) + 0.01
+        list3.append(round(j, 2))
+    for i1 in range(len(list)):
+        for i2 in range(len(list3)):
+            if list[i1][0] == list3[i2] and list[i1][1] == y:
+                if list[i1] == list[0]:
+                    d1 = ((x - p) * (y - list[len(list) - 1][1])) - ((y - y) * (x - list[len(list) - 1][0]))
+                    d2 = ((x - p) * (y - list[i1 + 1][1])) - ((y - y) * (x - list[i1 + 1][0]))
+                if list[i1] == list[len(list) - 1]:
+                    d1 = ((x - p) * (y - list[i1 - 1][1])) - ((y - y) * (x - list[i1 - 1][0]))
+                    d2 = ((x - p) * (y - list[0][1])) - ((y - y) * (x - list[0][0]))
+                if list[i1] != list[0] and list[i1] != list[len(list) - 1]:
+                    d1 = ((x - p)(y - list[i1 - 1][1])) - ((y - y)(x - list[i1 - 1][0]))
+                    d2 = ((x - p)(y - list[i1 + 1][1])) - ((y - y)(x - list[i1 + 1][0]))
+                if (d1 < 0 and d2 > 0) or (d1 > 0 and d2 < 0):
+                    count = count + 1
+        list3 = []
+        list3.append(j)
+        while round(j, 2) != round(p, 2):
+            j = round(j, 2) + 0.01
+            list3.append(round(j, 2))
+        for i1 in range(len(list)):
+            for i2 in range(len(list3)):
+                if list[i1][0] == list3[i2] and list[i1][1] == y:
+                    list4.append(list[i1])
+                    count = count + 1
+                    if len(list4) % 2 == 0:
+                        count = count + 1
+    if (count % 2) != 0:
+        return True
+    else:
+        return False
+
+
+def side(a, b, c):
+    """ Returns a position of the point c relative to the line going through a and b
+        Points a, b are expected to be different
+    """
+    d = (c[1] - a[1]) * (b[0] - a[0]) - (b[1] - a[1]) * (c[0] - a[0])
+    return 1 if d > 0 else (-1 if d < 0 else 0)
+
+
+def is_point_in_closed_segment(a, b, c):
+    """ Returns True if c is inside closed segment, False otherwise.
+        a, b, c are expected to be collinear
+    """
+    if a[0] < b[0]:
+        return a[0] <= c[0] and c[0] <= b[0]
+    if b[0] < a[0]:
+        return b[0] <= c[0] and c[0] <= a[0]
+
+    if a[1] < b[1]:
+        return a[1] <= c[1] and c[1] <= b[1]
+    if b[1] < a[1]:
+        return b[1] <= c[1] and c[1] <= a[1]
+
+    return a[0] == c[0] and a[1] == c[1]
+
+
+def closed_segment_intersect(a, b, c, d):
+    """ Verifies if closed segments a, b, c, d do intersect.
+    """
+    if a == b:
+        return a == c or a == d
+    if c == d:
+        return c == a or c == b
+
+    s1 = side(a, b, c)
+    s2 = side(a, b, d)
+
+    # All points are collinear
+    if s1 == 0 and s2 == 0:
+        return \
+            is_point_in_closed_segment(a, b, c) or is_point_in_closed_segment(a, b, d) or \
+            is_point_in_closed_segment(c, d, a) or is_point_in_closed_segment(c, d, b)
+
+    # No touching and on the same side
+    if s1 and s1 == s2:
+        return False
+
+    s1 = side(c, d, a)
+    s2 = side(c, d, b)
+
+    # No touching and on the same side
+    if s1 and s1 == s2:
+        return False
+    return True
+
+
+def vertical_check(list_shape1, list_shape2):
+    for y1 in range(len(list_shape1)):  # Get the lowest y-coordinate of shape-1
+        if y1 == 0:  # Get the highest y-coordinate of shape-1
+            high_y1 = list_shape1[y1][1]
+            low_y1 = list_shape1[y1][1]
+        else:
+            if list_shape1[y1][1] > high_y1:
+                high_y1 = list_shape1[y1][1]
+            if list_shape1[y1][1] < low_y1:
+                low_y1 = list_shape1[y1][1]
+
+    for y2 in range(len(list_shape2)):  # Get the lowest y-coordinate of shape-2
+        if y2 == 0:  # Get the highest y-coordinate of shape-2
+            high_y2 = list_shape2[y2][1]
+            low_y2 = list_shape2[y2][1]
+        else:
+            if list_shape2[y2][1] > high_y2:
+                high_y2 = list_shape2[y2][1]
+            if list_shape2[y2][1] < low_y2:
+                low_y2 = list_shape2[y2][1]
+    return high_y2, low_y2, high_y1, low_y1
+
+
+def horizontal_check(list_shape1, list_shape2):
+    for x1 in range(len(list_shape1)):  # Get the leftmost x-coordinate of shape-1
+        if x1 == 0:  # Get the rightmost x-coordinate of shape-1
+            right_x1 = list_shape1[x1][0]
+            left_x1 = list_shape1[x1][0]
+        else:
+            if list_shape1[x1][0] > right_x1:
+                right_x1 = list_shape1[x1][0]
+            if list_shape1[x1][0] < left_x1:
+                left_x1 = list_shape1[x1][0]
+
+    for x2 in range(len(list_shape2)):  # Get the leftmost x-coordinate of shape-2
+        if x2 == 0:  # Get the rightmost x-coordinate of shape-2
+            right_x2 = list_shape2[x2][0]
+            left_x2 = list_shape2[x2][0]
+        else:
+            if list_shape2[x2][0] > right_x2:
+                right_x2 = list_shape2[x2][0]
+            if list_shape2[x2][0] < left_x2:
+                left_x2 = list_shape2[x2][0]
+    return right_x2, left_x2, right_x1, left_x1
+
+
+def intersection(list_shape1, list_shape2):
+    list0 = 0
+    if (list_shape1 == list_shape2):
+        return True
+    high_y2, low_y2, high_y1, low_y1 = vertical_check(list_shape1, list_shape2)
+    if low_y1 > high_y2 or low_y2 > high_y1:
+        return False
+    right_x2, left_x2, right_x1, left_x1 = horizontal_check(list_shape1, list_shape2)
+    if left_x1 > right_x2 or left_x2 > right_x1:
+        return False
+    for e1 in range(len(list_shape1)):  # Creates the edges from co-ordinates of shape-1
+        if e1 == len(list_shape1) - 1:
+            a = list_shape1[0 + int(e1)]
+            b = list_shape1[0]
+        else:
+            a = list_shape1[0 + int(e1)]
+            b = list_shape1[1 + int(e1)]
+        for e2 in range(len(list_shape2)):  # Creates the edges from co-ordinates of shape-2
+            if e2 == len(list_shape2) - 1:
+                c = list_shape2[0 + int(e2)]
+                d = list_shape2[0]
+            else:
+                c = list_shape2[0 + int(e2)]
+                d = list_shape2[1 + int(e2)]
+            if (closed_segment_intersect(a, b, c, d) == True):
+                list0 = 1
+    if list0 == 1:
+        return True
+    else:
+        return False
+
+
+def is_point_in_closed_segment_vertical(a, b, c):
+    """ Returns True if c is inside closed segment, False otherwise.
+        a, b, c are expected to be collinear
+    """
+    if a[0] < b[0]:
+        return a[0] < c[0] and c[0] < b[0]
+    if b[0] < a[0]:
+        return b[0] < c[0] and c[0] < a[0]
+
+    if a[1] < b[1]:
+        return a[1] < c[1] and c[1] < b[1]
+    if b[1] < a[1]:
+        return b[1] < c[1] and c[1] < a[1]
+
+    return a[0] == c[0] and a[1] == c[1]
+
+
+def closed_segment_intersection_vertical(a, b, c, d):
+    """ Verifies if closed segments a, b, c, d do intersect.
+    """
+    if a == b:
+        return a == c or a == d
+    if c == d:
+        return c == a or c == b
+
+    s1 = side(a, b, c)
+    s2 = side(a, b, d)
+
+    # All points are collinear
+    if s1 == 0 and s2 == 0:
+        return \
+            is_point_in_closed_segment_vertical(a, b, c) or is_point_in_closed_segment_vertical(a, b, d) or \
+            is_point_in_closed_segment_vertical(c, d, a) or is_point_in_closed_segment_vertical(c, d, b)
+
+
+def point_inside_the_shape(list_shape, x, y):
+    if point_along_side(list_shape, x, y) == True:
+        M = 1000  # point"(M,y)" where "M" is a very large number
+        count = side_intersects_segment(list_shape, M, x, y)
+        if count >= 0:
+            return D_function(list_shape, M, x, y, count)
+        else:
+            return False
+    else:
+        return False
+
+
+def minimum_x_coordinate(list_shape1):
+    for i in range(len(list_shape1)):
+        if i == 0:
+            min_x = list_shape1[0][0]
+        else:
+            if min_x >= list_shape1[i][0]:
+                min_x = list_shape1[i][0]
+    return min_x
+
+
+def maximum_x_coordinate(list_1):
+    for i in range(len(list_1)):
+        if i == 0:
+            max_x = list_1[0][0]
+        else:
+            if max_x <= list_1[i][0]:
+                max_x = list_1[i][0]
+    return max_x
+
+
+def minimum_y_coordinate(list_2):
+    for i in range(len(list_2)):
+        if i == 0:
+            min_y = list_2[0][1]
+        else:
+            if min_y >= list_2[i][1]:
+                min_y = list_2[i][1]
+    return min_y
+
+
+def maximum_y_coordinate(list_2):
+    for i in range(len(list_2)):
+        if i == 0:
+            max_y = list_2[0][1]
+        else:
+            if max_y <= list_2[i][1]:
+                max_y = list_2[i][1]
+    return max_y
+
+
+def formation_of_set_S_vertical(list_bottom, S1, list_shape1):
+    list_shape3 = []
+    for g in range(len(list_bottom)):
+        if g > 2:
+            list_shape3.append(list_bottom[g])
+    list_shape3.append(list_bottom[0])
+    list_shape3 = clockwise_list(list_shape3)
+    S = []
+    for i in range(len(S1)):
+        S2 = []
+        if intersection(list_bottom, S1[i]) == True and intersection(list_shape1, S1[i]) == False:
+            if S1[i] != list_shape1:
+                S.append(S1[i])
+        for j in range(len(S1[i])):
+            if point_inside_the_shape(list_bottom, S1[i][j][0], S1[i][j][1]) == True and point_inside_the_shape(
+                    list_shape1, S1[i][j][0], S1[i][j][1]) == False:
+                S3 = S1[i][j][0], S1[i][j][1]
+                S2.append(S3)
+            if S2 == S1[i]:
+                S.append(S1[i])
+    return S, list_shape3
+
+
+def formation_of_set_S_horizontal(list_left, S1, list_shape1):
+    list_shape3 = []
+    for g in range(len(list_left)):
+        if g > 2:
+            list_shape3.append(list_left[g])
+    list_shape3.append(list_left[0])
+    list_shape3 = clockwise_list(list_shape3)
+    S = []
+    for i in range(len(S1)):
+        S2 = []
+        if intersection(list_left, S1[i]) == True and intersection(list_shape1, S1[i]) == False:
+            if S1[i] != list_shape1:
+                S.append(S1[i])
+        for j in range(len(S1[i])):
+            if point_inside_the_shape(list_left, S1[i][j][0], S1[i][j][1]) == True and point_inside_the_shape(
+                    list_shape1, S1[i][j][0], S1[i][j][1]) == False:
+                S3 = S1[i][j][0], S1[i][j][1]
+                S2.append(S3)
+            if S2 == S1[i]:
+                S.append(S1[i])
+    return S, list_shape3
+
+
+def intersection_of_shapes(list_shape1, list_shape2):
+    if (list_shape1 == list_shape2):
+        return True
+    for y1 in range(len(list_shape1)):  # Get the lowest y-coordinate of shape-1
+        if y1 == 0:  # Get the highest y-coordinate of shape-1
+            high_y1 = list_shape1[y1][1]
+            low_y1 = list_shape1[y1][1]
+        else:
+            if list_shape1[y1][1] > high_y1:
+                high_y1 = list_shape1[y1][1]
+            if list_shape1[y1][1] < low_y1:
+                low_y1 = list_shape1[y1][1]
+
+    for y2 in range(len(list_shape2)):  # Get the lowest y-coordinate of shape-2
+        if y2 == 0:  # Get the highest y-coordinate of shape-2
+            high_y2 = list_shape2[y2][1]
+            low_y2 = list_shape2[y2][1]
+        else:
+            if list_shape2[y2][1] > high_y2:
+                high_y2 = list_shape2[y2][1]
+            if list_shape2[y2][1] < low_y2:
+                low_y2 = list_shape2[y2][1]
+
+    if low_y1 > high_y2 or low_y2 > high_y1:  # Checks the condition for intersection
+        return False
+
+    for x1 in range(len(list_shape1)):  # Get the leftmost x-coordinate of shape-1
+        if x1 == 0:  # Get the rightmost x-coordinate of shape-1
+            right_x1 = list_shape1[x1][0]
+            left_x1 = list_shape1[x1][0]
+        else:
+            if list_shape1[x1][0] > right_x1:
+                right_x1 = list_shape1[x1][0]
+            if list_shape1[x1][0] < left_x1:
+                left_x1 = list_shape1[x1][0]
+
+    for x2 in range(len(list_shape2)):  # Get the leftmost x-coordinate of shape-2
+        if x2 == 0:  # Get the rightmost x-coordinate of shape-2
+            right_x2 = list_shape2[x2][0]
+            left_x2 = list_shape2[x2][0]
+        else:
+            if list_shape2[x2][0] > right_x2:
+                right_x2 = list_shape2[x2][0]
+            if list_shape2[x2][0] < left_x2:
+                left_x2 = list_shape2[x2][0]
+
+    if left_x1 > right_x2 or left_x2 > right_x1:  # Checks the condition for intersection
+        return False
+
+    for e1 in range(len(list_shape1)):  # Creates the edges from co-ordinates of shape-1
+        if e1 == len(list_shape1) - 1:
+            a = list_shape1[0 + int(e1)]
+            b = list_shape1[0]
+        else:
+            a = list_shape1[0 + int(e1)]
+            b = list_shape1[1 + int(e1)]
+        for e2 in range(len(list_shape2)):  # Creates the edges from co-ordinates of shape-2
+            if e2 == len(list_shape2) - 1:
+                c = list_shape2[0 + int(e2)]
+                d = list_shape2[0]
+            else:
+                c = list_shape2[0 + int(e2)]
+                d = list_shape2[1 + int(e2)]
+            if (closed_segment_intersect(a, b, c, d) == True):
+                return True
+                break
+    if (closed_segment_intersect(a, b, c, d) == True):  # Checks the condition for intersection
+        return True
+    else:
+        return False
+
+
+def arg_shapes(list2,length_sheet,width_sheet):
+    list4 = []
+    for i in range(len(list2)):
+        list3 = []
+        minimum_x = minimum_x_coordinate(list2[i])
+        minimum_y = minimum_y_coordinate(list2[i])
+        maximum_x = maximum_x_coordinate(list2[i])
+        for j in range(len(list2[i])):
+            a = (int(length_sheet) + (list2[i][j][0] - minimum_x)) - (maximum_x - minimum_x)
+            b = list2[i][j][1] - minimum_y + int(width_sheet)
+            c = a, b, 0
+            list3.append(c)
+        list4.append(list3)
+    return list4
+
+
+def image(img):
+    # convert to RGB
+    image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    image = cv2.flip(image, 0)
+    # convert to grayscale
+    gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+    # create a binary thresholded image
+    _, binary = cv2.threshold(gray, 225, 255, cv2.THRESH_BINARY_INV)
+    list1 = []
+    list2 = []
+    plt.imshow(gray)
+    plt.show()
+    # find the contours from the thresholded image
+    contours, hierarchy = cv2.findContours(binary, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE) #cv2.RETR_EXTERNAL
+    for i in range(len(hierarchy)):
+        list = []
+        for j in range(len(hierarchy[i])):
+            c = hierarchy[i][j][2]
+            d = hierarchy[i][j][3]
+            e = c, d
+            list.append(e)
+    for i in range(len(contours)):
+        list1 = []
+        for j in range(len(contours[i])):
+            for k in range(len(contours[i][j])):
+                a = contours[i][j][k][0]
+                b = contours[i][j][k][1]
+                c = a, b, 0
+                list1.append(c)
+        list2.append(list1)
+    list5 = list2
+    for i in range(len(list2)):
+        for j in range(len(list)):
+            if i == list[j][0]:
+                for k in range(len(list)):
+                    if i == list[k][1]:
+                        list5.pop(i)
+    list2 = list5
+    # font
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    #[Next, Previous, First_Child, Parent]
+    # Using cv2.putText() method
+    for i in range(len(list2)):
+        text = str(i + 1)
+        org = list2[i][0][0], list2[i][0][1] - 3
+        image = cv2.putText(image, text, org, font, fontScale=0.8, color=(0, 0, 255), thickness=1)
+    image = cv2.drawContours(image, contours, -1, (0, 255, 0), 2)
+        # show the image with the drawn contours
+    plt.imshow(image)
+    plt.show()
+    return list2
+
+
+def freecad_nesting(new_vertices_shapes,length_sheet,width_sheet) :
+    # Adding the requisite data to the macro file of FreeCAD
+    file_object = open("C:/Users/Harshil/AppData/Roaming/FreeCAD/Macro/Visualisation_Code.FCMacro", "w+")
+    file_object.write("#Import the library files \n"
+                      "import FreeCAD,Draft \n"
+                      "import PartDesign \n"
+                      "import PartDesignGui \n"
+                      "import Spreadsheet \n"
+                      "from math import sin,cos,degrees,radians,pi,sqrt,asin \n \n"
+                      "#Create a new document and activate PartDesign Workbench \n"
+                      "App.newDocument(\"Shape\") \n"
+                      "Gui.activateWorkbench(\"PartDesignWorkbench\") \n"
+                      "App.activeDocument().addObject('PartDesign::Body','Body') \n"
+                      "Gui.activeView().setActiveObject('pdbody', App.activeDocument().Body) \n"
+                      "Gui.Selection.clearSelection() \n"
+                      "Gui.Selection.addSelection(App.ActiveDocument.Body) \n"
+                      "App.ActiveDocument.recompute() \n")
+
+    file_object.write("sheet = [(0.0, 0.0, 0), (" + str(length_sheet) + ", 0.0, 0), (" + str(length_sheet) + ", " + str(
+        width_sheet) + ", 0), (0.0, " + str(width_sheet) + ", 0)] \n")
+    file_object.write("wire = Draft.makeWire(sheet, closed=True) \n")
+
+    c = ["a%d" % x for x in range(1, len(new_vertices_shapes) + 1)]
+    for x in range(len(c)):  # you can loop over them
+        file_object.write(str(c[x]) + "=" + str(new_vertices_shapes[x]) + "\n")
+        file_object.write("wire = Draft.makeWire(" + str(c[x]) + ", closed=True) \n")
+
+    file_object.close()
+    return print("Macro file has been updated/created")
+
+
+# ---------------------------------------------------------------------------------------------------------------#
+# PART-1: CREATING THE SHAPES AND SHEET WITH THE HELP OF THEIR DIMENSIONS
+# ---------------------------------------------------------------------------------------------------------------#
+
+# Developing the sheet through its dimensions
+length_sheet = float(input("Enter the length for sheet: "))
+width_sheet = float(input("Enter the width for sheet: "))
+vertices_sheet = [(0, 0, 0), (int(length_sheet), 0, 0), (int(length_sheet), (int(width_sheet)), 0),
+                  (0, (int(width_sheet)), 0)]
+sheet_area = 0
+for i in range(len(vertices_sheet)):
+    if i <= (len(vertices_sheet) - 2):
+        b = (vertices_sheet[i + 1][1] + vertices_sheet[i][1]) / 2
+        e = vertices_sheet[i + 1][0] - vertices_sheet[i][0]
+        sheet_area = sheet_area + (b * e)
+    else:
+        b = (vertices_sheet[i][1] + vertices_sheet[0][1]) / 2
+        e = vertices_sheet[0][0] - vertices_sheet[i][0]
+        sheet_area = sheet_area + (b * e)
+    area_of_sheet = abs(sheet_area)  # area of piece after calculation
+print("area of sheet:", area_of_sheet)
+
+vertices_shapes_1 = []
+a = int(input("How do you want to give the input? \n 1 : File selection \n 2 : Shape creation\n"))
+if a == 1:
+    b = int(input("Enter the extension of image \n 1:.svg \n 2:Format of images(.png,.jpeg,.tiff) \n"))
+    if b == 1:
+        # CONVERSION
+        drawing = svg2rlg(input("Enter path: "))
+        renderPM.drawToFile(drawing, "nested_shape.png", fmt="PNG")
+        print("conversion done")
+        img = cv2.imread("nested_shape.png")
+        vertices_shapes_1 = image(img)
+        #vertices_shapes = arg_shapes(image(img),length_sheet,width_sheet)
+    elif b == 2:
+        img = cv2.imread(input('ENTER PATH : '))
+        vertices_shapes_1 = image(img)
+        #vertices_shapes = arg_shapes(image(img),length_sheet,width_sheet)
+    else :
+        print("Please enter correct number")
+        vertices_shapes_1 = []
+elif a == 2:
+    number_shape = input("Enter the number of shapes you want to form: ")
+    no_shape = 0
+    if number_shape.isnumeric() == False or int(number_shape) < 0:  # Checking whether the number is numeric or not
+        print("Please enter only positive value")
+    vertices_for_other_shapes = []
+    while (int(number_shape) != no_shape):
+        type_shape = input(
+            "Choose the shape: 1.Circle 2.Triangle 3.Square 4.Rectangle 5.Regular Pentagon 6.Regular Hexagon 7.Polygon: ")
+        type_sh = int(type_shape)
+        if type_shape.isnumeric() == False or int(type_shape) < 0:
+            print("Please enter only positive value")
+
+        if type_sh == 1:  # Developing a circle
+            Circle_shape = []
+            radius = float(input("Enter the radius: "))
+            area_through_radius = (pi * radius * radius)
+            angle = 1
+            times = 360 / angle
+            x = radius
+            y = radius
+            theta = 0
+            circle_area = 0
+            # Developing a polygon which contains 360 sides and also resembles circle completely
+            for i in range(int(times)):
+                point_circle = (round(int(length_sheet) + (x + ((radius) * sin(theta * (pi / 180)))) - (2 * radius), 6),
+                                round(int(width_sheet) + (y + ((radius) * cos(theta * (pi / 180)))), 6), 0)
+                Circle_shape.append(point_circle)
+                theta = theta + angle
+            vertices_for_other_shapes.append(Circle_shape)
+            no_shape = no_shape + 1
+        elif type_sh == 2:  # Developing a triangle
+            temp1_triangle = float(input("Enter length-1 of Triangle: "))
+            temp2_triangle = float(input("Enter length-2 of Triangle: "))
+            temp3_triangle = float(input("Enter length-3 of Triangle: "))
+            var_d = temp1_triangle + temp2_triangle
+            var_e = temp2_triangle + temp3_triangle
+            var_f = temp3_triangle + temp1_triangle
+            # To check whether the triangle is valid or not
+            if var_d > temp3_triangle and var_e > temp1_triangle and var_f > temp2_triangle:
+                # Calculations for triangle
+                # Equilateral Triangle
+                if temp1_triangle == temp2_triangle == temp3_triangle:
+                    Triangle_shape = [(int(length_sheet) - temp2_triangle, int(width_sheet), 0),(int(length_sheet), int(width_sheet), 0), ((int(length_sheet) + round((temp1_triangle / 2), 2)) - temp2_triangle,round(sqrt((temp1_triangle * 2) - ((temp1_triangle / 2) * 2)), 2) + int(width_sheet),0)]
+                    vertices_for_other_shapes.append(Triangle_shape)
+                # Isosceles Triangle
+                elif temp1_triangle == temp2_triangle or temp2_triangle == temp3_triangle or temp3_triangle == temp1_triangle:
+                    if temp1_triangle == temp3_triangle:
+                        var_t2 = temp2_triangle
+                        var_t1 = temp1_triangle
+                    elif temp1_triangle == temp2_triangle:
+                        var_t2 = temp3_triangle
+                        var_t1 = temp2_triangle
+                    else:
+                        var_t2 = temp1_triangle
+                        var_t1 = temp3_triangle
+                    # Isosceles Triangle's calculations
+                    Triangle_shape = [(int(length_sheet) - var_t2, int(width_sheet), 0),
+                                      (int(length_sheet), int(width_sheet), 0), (
+                                          (int(length_sheet) + (var_t2 / 2)) - var_t2,
+                                          round(sqrt((var_t1 * var_t1) - ((var_t2 / 2) * (var_t2 / 2))), 2) + int(width_sheet),0)]
+                    vertices_for_other_shapes.append(Triangle_shape)
+                # Scalene Triangle
+                else:
+                    if temp2_triangle > temp1_triangle and temp2_triangle > temp3_triangle:
+                        var_t1 = temp1_triangle
+                        var_t2 = temp2_triangle
+                        var_t3 = temp3_triangle
+                    elif temp1_triangle > temp3_triangle and temp1_triangle > temp2_triangle:
+                        var_t2 = temp1_triangle
+                        var_t1 = temp3_triangle
+                        var_t3 = temp2_triangle
+                    else:
+                        var_t2 = temp3_triangle
+                        var_t1 = temp1_triangle
+                        var_t3 = temp2_triangle
+                    # Scalene Triangle's calculations
+                    S = (var_t1 + var_t2 + var_t3) / 2
+                    A = sqrt(S * (S - var_t1) * (S - var_t2) * (S - var_t3))
+                    H = round((2 * A) / var_t2, 2)
+                    G = asin(H / var_t1)
+                    F = round(var_t1 * cos(G), 2)
+                    E = asin(H / var_t3)
+                    I = var_t3 * cos(E)
+                    W = round(((F + I) - var_t2) / 2, 2)
+                    R = F - W
+                    X = sqrt((var_t1 * var_t1) - (R * R))
+                    T = round(X - H, 2)
+                    Triangle_shape = [(int(length_sheet) - var_t2, int(width_sheet), 0),
+                                      (int(length_sheet), int(width_sheet), 0),
+                                      ((int(length_sheet) + (F - W)) - var_t2, int(width_sheet) + (H + T), 0)]
+                    vertices_for_other_shapes.append(Triangle_shape)
+                no_shape = no_shape + 1
+            else:
+                print("\nEnter the correct length for triangle")
+        elif type_sh == 3:  # Developing a square
+            Square = float(input("Enter length of square: "))
+            # Calculations for square
+            Square_shape = [(int(length_sheet) - Square, int(width_sheet), 0),
+                            (int(length_sheet) - Square, Square + int(width_sheet), 0),
+                            (int(length_sheet), Square + int(width_sheet), 0), (int(length_sheet), int(width_sheet), 0)]
+            vertices_for_other_shapes.append(Square_shape)
+            no_shape = no_shape + 1
+        elif type_sh == 4:  # Developing a rectangle
+            Rect_length = float(input("Enter length of rectangle: "))
+            Rect_width = float(input("Enter width of rectangle: "))
+            # Calculation for rectangle
+            Rectangle_shape = [(int(length_sheet) - Rect_length, int(width_sheet), 0),
+                               (int(length_sheet) - Rect_length, Rect_width + int(width_sheet), 0),
+                               (int(length_sheet), Rect_width + int(width_sheet), 0),
+                               (int(length_sheet), int(width_sheet), 0)]
+            vertices_for_other_shapes.append(Rectangle_shape)
+            no_shape = no_shape + 1
+        elif type_sh == 5:  # Developing a pentagon
+            length_Pentagon = float(input("Enter the length of pentagon: "))
+            # Calculation for pentagon
+            Pentagon_shape = [(int(length_sheet) + (round(length_Pentagon * cos((2 * pi) / 5), 2)) - (
+                round((2 * length_Pentagon * cos((2 * pi) / 5)) + length_Pentagon, 2)), int(width_sheet), 0),
+                              ((int(length_sheet) + (
+                                          round((length_Pentagon * cos((2 * pi) / 5)), 2) + length_Pentagon)) - (
+                                   round((2 * length_Pentagon * cos((2 * pi) / 5)) + length_Pentagon, 2)),
+                               int(width_sheet),
+                               0),
+                              (int(length_sheet), round(length_Pentagon * sin((2 * pi) / 5), 2) + int(width_sheet), 0),
+                              ((int(length_sheet) + round((length_Pentagon * cos((2 * pi) / 5)) + (length_Pentagon / 2),
+                                                          2)) - (
+                                   round((2 * length_Pentagon * cos((2 * pi) / 5)) + length_Pentagon, 2)),
+                               round((length_Pentagon * sin((2 * pi) / 5)) + (length_Pentagon * cos(pi / 3.33)),
+                                     2) + int(
+                                   width_sheet), 0),
+                              (int(length_sheet) - (
+                                  round((2 * length_Pentagon * cos((2 * pi) / 5)) + length_Pentagon, 2)),
+                               round(length_Pentagon * sin((2 * pi) / 5), 2) + int(width_sheet), 0)]
+            vertices_for_other_shapes.append(Pentagon_shape)
+            no_shape = no_shape + 1
+        elif type_sh == 6:  # Developing a hexagon
+            length_Hexagon = float(input("Enter the length of hexagon: "))
+            # Calculations for hexagon
+            Hexagon_shape = [(int(length_sheet) + (round(length_Hexagon * cos(pi / 6), 2)) - (
+                round(length_Hexagon * 2 * cos(pi / 6), 2)), int(width_sheet), 0),
+                             (int(length_sheet), round(length_Hexagon * sin(pi / 6), 2) + int(width_sheet), 0),
+                             (int(length_sheet),
+                              round((length_Hexagon * sin(pi / 6)) + length_Hexagon, 2) + int(width_sheet), 0),
+                             ((int(length_sheet) + round(length_Hexagon * cos(pi / 6), 2)) - (
+                                 round(length_Hexagon * 2 * cos(pi / 6), 2)),
+                              round(((length_Hexagon * sin(pi / 6)) + length_Hexagon) + (length_Hexagon * sin(pi / 6)),
+                                    2) + int(width_sheet), 0),
+                             (int(length_sheet) - (round(length_Hexagon * 2 * cos(pi / 6), 2)),
+                              round(length_Hexagon * sin(pi / 6) + length_Hexagon, 2) + int(width_sheet), 0),
+                             (int(length_sheet) - (round(length_Hexagon * 2 * cos(pi / 6), 2)),
+                              round(length_Hexagon * sin(pi / 6), 2) + int(width_sheet), 0)]
+            vertices_for_other_shapes.append(Hexagon_shape)
+            no_shape = no_shape + 1
+        else:  # Developing a polygon with given amount of vertices
+            Polygon_shape = []
+            Polygon_shape_final = []
+            no_polygon = 0
+            polygon_vertices = input("Enter the total vertices of polygon: ")
+            # Calculations for polygon
+            while (int(polygon_vertices) != no_polygon):
+                X_co_ordinate = input("Enter the value of X-Co-ordinate: ")
+                Y_co_ordinate = input("Enter the value of Y-Co-ordinate: ")
+                Polygon_shape.insert(no_polygon, (float(X_co_ordinate), float(Y_co_ordinate), 0))
+                no_polygon = no_polygon + 1
+
+            minimum_x = minimum_x_coordinate(Polygon_shape)
+            maximum_x = maximum_x_coordinate(Polygon_shape)
+            minimum_y = minimum_y_coordinate(Polygon_shape)
+            # Putting a polygon to the upper-right corner of the sheet
+            for i in range(len(Polygon_shape)):
+                origin = (int(length_sheet) + (Polygon_shape[i][0] - minimum_x)) - (maximum_x - minimum_x), \
+                         Polygon_shape[i][1] - minimum_y + int(width_sheet), 0
+                Polygon_shape_final.append(origin)
+
+            vertices_for_other_shapes.append(Polygon_shape_final)
+            no_shape = no_shape + 1
+else :
+    print("Please enter correct number")
+    vertices_shapes = []
+
+# Developing the shapes through their dimensions
+if a != 2:
+    vertices_shapes = []
+    vertices_shapes = arg_shapes(vertices_shapes_1,length_sheet,width_sheet)
+    vertices_for_other_shapes = vertices_shapes
+    number_shape = len(vertices_shapes)
+# ---------------------------------------------------------------------------------------------------------------#
+
+#Functionality to add grouping of shapes
+if a == 1 and (b == 1 or b == 2):
+    c = int(input("Do you want to group the shapes?: \n"
+                  "1. Yes, I want to group the shapes \n"
+                  "2. No, I want to nest the shapes directly \n"))
+
+    if c == 1:
+        print("Opening the grouping section for you...")
+
+        # Grouping the shapes and preparing those groups for nesting
+        no_of_group = int(input("Enter the Number of groups to be formed: "))
+
+        no_of_shapes_in_grp = []
+        for i in range(no_of_group):
+            a =i + 1
+            no_of_shapes_in_grp.append(int(input("Enter the Number of shapes in group-"+str(a)+": ")))
+
+        grouped_list = []
+        shape_choice = int(input("How do you want to create the groups?: \n"
+                                 "1: Scattered - By entering specific position of shapes\n"
+                                 "2: Consecutive - By entering the starting and ending position of shapes \n"))
+        if shape_choice == 1:
+            for i in range(len(no_of_shapes_in_grp)):
+                a = i + 1
+                shapes_in_group = []
+                for j in range(no_of_shapes_in_grp[i]):
+                    b = j + 1
+                    c = (input("Enter the position (in numbers) for the group-" + str(a) + " and shape-" + str(b) + ": "))
+                    shapes_in_group.append(int(c))
+                grouped_list.append(shapes_in_group)
+        elif shape_choice == 2:
+            for i in range(len(no_of_shapes_in_grp)):
+                a = i + 1
+                b = 0
+                shapes_in_group = []
+                range_start_group = int(input("Enter the number for starting shape for group-"+str(a)+": "))
+                range_end_group = int(input("Enter the number for ending shape for group-"+str(a)+": "))
+                for j in range(no_of_shapes_in_grp[i]):
+                    if j == 0:
+                        b = range_start_group
+                        shapes_in_group.append(int(b))
+                        b = b + 1
+                    else:
+                        shapes_in_group.append(int(b))
+                        b = b + 1
+                grouped_list.append(shapes_in_group)
+        else:
+            print("You have entered an invalid choice.")
+
+        groups_list = []
+        all_shapes_length = []
+        for i in range(len(grouped_list)):
+            grouped_shapes = []
+            shapes_length = []
+            for j in range(len(grouped_list[i])):
+                a = len(vertices_shapes_1[(grouped_list[i][j]) - 1])
+                shapes_length.append(int(a))
+                for k in range(a):
+                    grouped_shapes.append(vertices_shapes_1[(grouped_list[i][j]) - 1][k])
+            groups_list.append(grouped_shapes)
+            all_shapes_length.append(shapes_length)
+
+        print(all_shapes_length)
+        print(groups_list)
+
+        print("-----------------------------------------------")
+        arranged_groups = []
+        arranged_groups = arg_shapes(groups_list,length_sheet,width_sheet)
+        progress_for_shape = 0
+        new_vertices_shapes = []
+        invalid_shapes = []
+
+        # Nesting the shapes using bottom-left approach
+
+        new_vertices_other_shapes = []
+        maximum_y_for_other_shape_for_new_column = 0
+        maximum_y_for_other_shape_for_current_column = 0
+        maximum_x_of_previous_column = 0
+        first_shape_placed = 0
+        for j in range(len(new_vertices_shapes)):
+            maximum_y_compare = maximum_y_coordinate(new_vertices_shapes[j])
+            if maximum_y_compare > maximum_y_for_other_shape_for_new_column:
+                maximum_y_for_other_shape_for_new_column = maximum_y_compare
+        for p in range(len(arranged_groups)):
+            moved_other_shape = []
+            intersection_with_previous_shapes = 0
+            intersection_with_previous_other_shapes = 0
+            if p == 0:
+                # Use maximum y to place the circles and other shapes and check for intersection and sheet value
+                other_shape_to_move = arranged_groups[p]
+                vertical_movement_other_shape = width_sheet - (maximum_y_for_other_shape_for_new_column + 1)
+                minimum_x_of_other_shape = minimum_x_coordinate(other_shape_to_move)
+                horizontal_movement_other_shape = minimum_x_of_other_shape - 1
+                for j in range(len(other_shape_to_move)):
+                    k = other_shape_to_move[j][0] - horizontal_movement_other_shape
+                    l = other_shape_to_move[j][1] - vertical_movement_other_shape
+                    moved_other_shape.append((round(k, 2), round(l, 2), 0))
+
+                # Checking the intersection of current shape with previously placed shapes
+                for j in range(len(new_vertices_shapes)):
+                    if intersection_of_shapes(new_vertices_shapes[j], moved_other_shape) == True:
+                        intersection_with_previous_shapes = 1
+
+                # Placing the shapes if no intersections exist
+                if intersection_with_previous_shapes == 0:
+                    for j in range(len(moved_other_shape)):
+                        invalid = 0
+                        if (((moved_other_shape[j][0] > length_sheet) or (
+                                moved_other_shape[j][1] > width_sheet)) and invalid == 0):
+                            invalid = 1
+                            break
+                    if invalid == 0:
+                        new_vertices_other_shapes.append(moved_other_shape)
+                        first_shape_placed = 1
+                        time.sleep(0.1)
+                        progress_for_shape = progress_for_shape + 1
+                        #update_progress(int(progress_for_shape) / int(number_shape))
+                    if invalid == 1:
+                        invalid_shapes.append(arranged_groups[p])
+                        time.sleep(0.1)
+                        progress_for_shape = progress_for_shape + 1
+                        #update_progress(int(progress_for_shape) / int(number_shape))
+
+            if p != 0:
+                # Use maximum y to place the circles and other shapes and check for intersection and sheet value
+                other_shape_to_move = arranged_groups[p]
+                if first_shape_placed == 1:
+                    maximum_y_for_other_shape_for_current_column = maximum_y_coordinate(
+                        new_vertices_other_shapes[len(new_vertices_other_shapes) - 1])
+                else:
+                    maximum_y_for_other_shape_for_current_column = maximum_y_for_other_shape_for_new_column
+                minimum_x_of_other_shape = minimum_x_coordinate(other_shape_to_move)
+                horizontal_movement_other_shape = minimum_x_of_other_shape - (maximum_x_of_previous_column + 1)
+                vertical_movement_other_shape = width_sheet - (maximum_y_for_other_shape_for_current_column + 1)
+                for j in range(len(other_shape_to_move)):
+                    k = other_shape_to_move[j][0] - horizontal_movement_other_shape
+                    l = other_shape_to_move[j][1] - vertical_movement_other_shape
+                    moved_other_shape.append((round(k, 2), round(l, 2), 0))
+
+                # Checking the intersection of current shape with previously placed shapes
+                for j in range(len(new_vertices_shapes)):
+                    if intersection_of_shapes(new_vertices_shapes[j], moved_other_shape) == True:
+                        intersection_with_previous_shapes = 1
+
+                for j in range(len(new_vertices_other_shapes)):
+                    if intersection_of_shapes(new_vertices_other_shapes[j], moved_other_shape) == True:
+                        intersection_with_previous_other_shapes = 1
+
+                # Placing the shapes if no intersections exist
+                if intersection_with_previous_shapes == 0 and intersection_with_previous_other_shapes == 0:
+                    for j in range(len(moved_other_shape)):
+                        invalid = 0
+                        if (((moved_other_shape[j][0] > length_sheet) or (
+                                moved_other_shape[j][1] > width_sheet)) and invalid == 0):
+                            invalid = 1
+                            break
+                    if invalid == 0:
+                        new_vertices_other_shapes.append(moved_other_shape)
+                    # Trying to nest the shape with maximum values of previous shapes as the last option
+                    if invalid == 1:
+                        moved_other_shape = []
+                        for j in range(len(new_vertices_other_shapes)):
+                            maximum_x_compare = maximum_x_coordinate(new_vertices_other_shapes[j])
+                            if maximum_x_compare > maximum_x_of_previous_column:
+                                maximum_x_of_previous_column = maximum_x_compare
+                        horizontal_movement_other_shape = minimum_x_of_other_shape - (maximum_x_of_previous_column + 1)
+                        vertical_movement_other_shape = width_sheet - (maximum_y_for_other_shape_for_new_column + 1)
+                        for j in range(len(other_shape_to_move)):
+                            k = other_shape_to_move[j][0] - horizontal_movement_other_shape
+                            l = other_shape_to_move[j][1] - vertical_movement_other_shape
+                            moved_other_shape.append((round(k, 2), round(l, 2), 0))
+
+                        # Checking for intersection again with other shapes
+                        for j in range(len(new_vertices_shapes)):
+                            if intersection_of_shapes(new_vertices_shapes[j], moved_other_shape) == True:
+                                intersection_with_previous_shapes = 1
+
+                        # Final placement of invalid shapes (those which were not placed previously)
+                        if intersection_with_previous_shapes == 0:
+                            for j in range(len(moved_other_shape)):
+                                invalid = 0
+                                if (((moved_other_shape[j][0] > length_sheet) or (
+                                        moved_other_shape[j][1] > width_sheet)) and invalid == 0):
+                                    invalid = 1
+                                    break
+                            if invalid == 0:
+                                new_vertices_other_shapes.append(moved_other_shape)
+                                time.sleep(0.1)
+                                progress_for_shape = progress_for_shape + 1
+                                #update_progress(int(progress_for_shape) / int(number_shape))
+                            if invalid == 1:
+                                invalid_shapes.append(moved_other_shape)
+                                time.sleep(0.1)
+                                progress_for_shape = progress_for_shape + 1
+                                #update_progress(int(progress_for_shape) / int(number_shape))
+
+        # ---------------------------------------------------------------------------------------------------------------#
+
+        # Appending the shapes from the other shapes' list to the main and final list of vertices of the shapes to be placed
+        for n in range(len(new_vertices_other_shapes)):
+            new_vertices_shapes.append(new_vertices_other_shapes[n])
+
+        #Ungrouping the groups back to the form of shapes
+        #all_shapes_length
+        grouped_nested_shapes = []
+        for i in range(len(all_shapes_length)):
+            c = []
+            for j in range(len(all_shapes_length[i])):
+                b = all_shapes_length[i][j]
+                c = new_vertices_shapes[i][:b]
+                grouped_nested_shapes.append(c)
+                d = len(new_vertices_shapes[i])
+                e = d - b
+                f = new_vertices_shapes[i][-e:]
+                new_vertices_shapes[i] = f
+
+
+        # To make a beep sound once the code gives its output to notify the user
+        #beep_sound(5)
+
+        # ---------------------------------------------------------------------------------------------------------------#
+
+        # Printing all of the required outputs obtained from the given inputs
+        print("-----------------------------------------------")
+        if len(invalid_shapes) == 1 and len(new_vertices_shapes) != 1:
+            print("There is an unplaced shape and", len(new_vertices_shapes),
+                  "shapes have been placed in the sheet successfully.")
+        if len(new_vertices_shapes) == 1 and len(invalid_shapes) != 1:
+            print("There are", len(invalid_shapes), "unplaced shapes and one shape has been placed in the sheet successfully.")
+        if len(invalid_shapes) == 1 and len(new_vertices_shapes) == 1:
+            print("There is an unplaced shape and one shape has been placed in the sheet successfully.")
+        if len(new_vertices_shapes) != 1 and len(invalid_shapes) != 1:
+            print("There are", len(invalid_shapes), "unplaced shapes and", len(new_vertices_shapes),
+                  "shapes have been placed in the sheet successfully.")
+        print("-----------------------------------------------")
+        print("Vertices of invalid shapes:", invalid_shapes)
+        print("-----------------------------------------------")
+        print("Final vertices for shapes: ", grouped_nested_shapes)
+        print("-----------------------------------------------")
+
+        abc = freecad_nesting(grouped_nested_shapes,length_sheet,width_sheet)
+
+if a == 2 or c == 2:
+    print("Wait for sometime, nesting is happening in the background...")
+    print("-----------------------------------------------")
+
+    progress_for_shape = 0
+    new_vertices_shapes = []
+    invalid_shapes = []
+
+    # Nesting the circles and the remaining invalid shapes using bottom-left approach
+
+    new_vertices_other_shapes = []
+    maximum_y_for_other_shape_for_new_column = 0
+    maximum_y_for_other_shape_for_current_column = 0
+    maximum_x_of_previous_column = 0
+    first_shape_placed = 0
+    for j in range(len(new_vertices_shapes)):
+        maximum_y_compare = maximum_y_coordinate(new_vertices_shapes[j])
+        if maximum_y_compare > maximum_y_for_other_shape_for_new_column:
+            maximum_y_for_other_shape_for_new_column = maximum_y_compare
+    for p in range(len(vertices_for_other_shapes)):
+        moved_other_shape = []
+        intersection_with_previous_shapes = 0
+        intersection_with_previous_other_shapes = 0
+        if p == 0:
+            # Use maximum y to place the circles and other shapes and check for intersection and sheet value
+            other_shape_to_move = vertices_for_other_shapes[p]
+            vertical_movement_other_shape = width_sheet - (maximum_y_for_other_shape_for_new_column + 1)
+            minimum_x_of_other_shape = minimum_x_coordinate(other_shape_to_move)
+            horizontal_movement_other_shape = minimum_x_of_other_shape - 1
+            for j in range(len(other_shape_to_move)):
+                k = other_shape_to_move[j][0] - horizontal_movement_other_shape
+                l = other_shape_to_move[j][1] - vertical_movement_other_shape
+                moved_other_shape.append((round(k, 2), round(l, 2), 0))
+
+            # Checking the intersection of current shape with previously placed shapes
+            for j in range(len(new_vertices_shapes)):
+                if intersection_of_shapes(new_vertices_shapes[j], moved_other_shape) == True:
+                    intersection_with_previous_shapes = 1
+
+            # Placing the shapes if no intersections exist
+            if intersection_with_previous_shapes == 0:
+                for j in range(len(moved_other_shape)):
+                    invalid = 0
+                    if (((moved_other_shape[j][0] > length_sheet) or (
+                            moved_other_shape[j][1] > width_sheet)) and invalid == 0):
+                        invalid = 1
+                        break
+                if invalid == 0:
+                    new_vertices_other_shapes.append(moved_other_shape)
+                    first_shape_placed = 1
+                    time.sleep(0.1)
+                    progress_for_shape = progress_for_shape + 1
+                    # update_progress(int(progress_for_shape) / int(number_shape))
+                if invalid == 1:
+                    invalid_shapes.append(vertices_for_other_shapes[p])
+                    time.sleep(0.1)
+                    progress_for_shape = progress_for_shape + 1
+                    # update_progress(int(progress_for_shape) / int(number_shape))
+
+        if p != 0:
+            # Use maximum y to place the circles and other shapes and check for intersection and sheet value
+            other_shape_to_move = vertices_for_other_shapes[p]
+            if first_shape_placed == 1:
+                maximum_y_for_other_shape_for_current_column = maximum_y_coordinate(
+                    new_vertices_other_shapes[len(new_vertices_other_shapes) - 1])
+            else:
+                maximum_y_for_other_shape_for_current_column = maximum_y_for_other_shape_for_new_column
+            minimum_x_of_other_shape = minimum_x_coordinate(other_shape_to_move)
+            horizontal_movement_other_shape = minimum_x_of_other_shape - (maximum_x_of_previous_column + 1)
+            vertical_movement_other_shape = width_sheet - (maximum_y_for_other_shape_for_current_column + 1)
+            for j in range(len(other_shape_to_move)):
+                k = other_shape_to_move[j][0] - horizontal_movement_other_shape
+                l = other_shape_to_move[j][1] - vertical_movement_other_shape
+                moved_other_shape.append((round(k, 2), round(l, 2), 0))
+
+            # Checking the intersection of current shape with previously placed shapes
+            for j in range(len(new_vertices_shapes)):
+                if intersection_of_shapes(new_vertices_shapes[j], moved_other_shape) == True:
+                    intersection_with_previous_shapes = 1
+
+            for j in range(len(new_vertices_other_shapes)):
+                if intersection_of_shapes(new_vertices_other_shapes[j], moved_other_shape) == True:
+                    intersection_with_previous_other_shapes = 1
+
+            # Placing the shapes if no intersections exist
+            if intersection_with_previous_shapes == 0 and intersection_with_previous_other_shapes == 0:
+                for j in range(len(moved_other_shape)):
+                    invalid = 0
+                    if (((moved_other_shape[j][0] > length_sheet) or (
+                            moved_other_shape[j][1] > width_sheet)) and invalid == 0):
+                        invalid = 1
+                        break
+                if invalid == 0:
+                    new_vertices_other_shapes.append(moved_other_shape)
+                # Trying to nest the shape with maximum values of previous shapes as the last option
+                if invalid == 1:
+                    moved_other_shape = []
+                    for j in range(len(new_vertices_other_shapes)):
+                        maximum_x_compare = maximum_x_coordinate(new_vertices_other_shapes[j])
+                        if maximum_x_compare > maximum_x_of_previous_column:
+                            maximum_x_of_previous_column = maximum_x_compare
+                    horizontal_movement_other_shape = minimum_x_of_other_shape - (maximum_x_of_previous_column + 1)
+                    vertical_movement_other_shape = width_sheet - (maximum_y_for_other_shape_for_new_column + 1)
+                    for j in range(len(other_shape_to_move)):
+                        k = other_shape_to_move[j][0] - horizontal_movement_other_shape
+                        l = other_shape_to_move[j][1] - vertical_movement_other_shape
+                        moved_other_shape.append((round(k, 2), round(l, 2), 0))
+
+                    # Checking for intersection again with other shapes
+                    for j in range(len(new_vertices_shapes)):
+                        if intersection_of_shapes(new_vertices_shapes[j], moved_other_shape) == True:
+                            intersection_with_previous_shapes = 1
+
+                    # Final placement of invalid shapes (those which were not placed previously)
+                    if intersection_with_previous_shapes == 0:
+                        for j in range(len(moved_other_shape)):
+                            invalid = 0
+                            if (((moved_other_shape[j][0] > length_sheet) or (
+                                    moved_other_shape[j][1] > width_sheet)) and invalid == 0):
+                                invalid = 1
+                                break
+                        if invalid == 0:
+                            new_vertices_other_shapes.append(moved_other_shape)
+                            time.sleep(0.1)
+                            progress_for_shape = progress_for_shape + 1
+                            # update_progress(int(progress_for_shape) / int(number_shape))
+                        if invalid == 1:
+                            invalid_shapes.append(moved_other_shape)
+                            time.sleep(0.1)
+                            progress_for_shape = progress_for_shape + 1
+                            # update_progress(int(progress_for_shape) / int(number_shape))
+
+    # ---------------------------------------------------------------------------------------------------------------#
+
+    # Appending the shapes from the other shapes' list to the main and final list of vertices of the shapes to be placed
+    for n in range(len(new_vertices_other_shapes)):
+        new_vertices_shapes.append(new_vertices_other_shapes[n])
+
+    # To make a beep sound once the code gives its output to notify the user
+    # beep_sound(5)
+
+    # ---------------------------------------------------------------------------------------------------------------#
+
+    # Printing all of the required outputs obtained from the given inputs
+    print("-----------------------------------------------")
+    if len(invalid_shapes) == 1 and len(new_vertices_shapes) != 1:
+        print("There is an unplaced shape and", len(new_vertices_shapes),
+              "shapes have been placed in the sheet successfully.")
+    if len(new_vertices_shapes) == 1 and len(invalid_shapes) != 1:
+        print("There are", len(invalid_shapes),
+              "unplaced shapes and one shape has been placed in the sheet successfully.")
+    if len(invalid_shapes) == 1 and len(new_vertices_shapes) == 1:
+        print("There is an unplaced shape and one shape has been placed in the sheet successfully.")
+    if len(new_vertices_shapes) != 1 and len(invalid_shapes) != 1:
+        print("There are", len(invalid_shapes), "unplaced shapes and", len(new_vertices_shapes),
+              "shapes have been placed in the sheet successfully.")
+    print("-----------------------------------------------")
+    print("Vertices of invalid shapes:", invalid_shapes)
+    print("-----------------------------------------------")
+    print("Final vertices for shapes: ", new_vertices_shapes)
+    print("-----------------------------------------------")
+
+    abc = freecad_nesting(new_vertices_shapes,length_sheet,width_sheet)
+
+# ---------------------------------------------------------------------------------------------------------------#
