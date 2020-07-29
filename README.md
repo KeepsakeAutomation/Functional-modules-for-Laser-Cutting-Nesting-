@@ -42,6 +42,8 @@ __3) Flow Chart for Contour Detection from an image to extraction shape coordina
 <img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/Flow_chart_3.png">  
  </p>
 
+__NOTE:__ Following packages need to be installed for proper usage of this nesting module: 1. cv2 2. matplotlib 3.svglib 4.reportlab 5.math 6.time
+
 To-do list:  
 1. Optimisation of nesting by adding more functions for distances  
 2. Creating the library for the nesting code  
