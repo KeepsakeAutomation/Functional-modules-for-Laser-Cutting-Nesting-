@@ -29,7 +29,7 @@ a) Bottom-Left approach b) DJD Heuristic approach
 __These are the images of nested shapes from the Drawing file(.DXF) as file source:__  
 <img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/mega_shape_before nesting.PNG"><img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/mega_shape_after nesting.PNG">  
 __Here are the images of nested shapes from the image as file source:__   
-<img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/fun_nested.PNG" width="250" height="250"> <img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/nested_ganesh.PNG" width="250" height="250"> <img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/random_shapes.PNG" width="250" height="250">  
+<img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/fun_nested.PNG" width="250" height="250"> <img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/nested_ganesh.PNG" width="250" height="250">    
 __These are the images depicting contour detection in the cases of images given as inputs:__  
 <p align="center">
 <img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/shapes_edge.png" width="500" height="300"> 
