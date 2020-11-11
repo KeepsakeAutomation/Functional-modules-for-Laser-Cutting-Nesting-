@@ -33,10 +33,7 @@ __Here are the images of nested shapes from the image as file source:__
 __These are the images depicting contour detection in the cases of images given as inputs:__  
 <p align="center">
 <img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/shapes_edge.png" width="500" height="300"> 
-</p>
-<p align="left">
-<img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/ganesh_edge.png" width="500" height="250"> <img src="https://github.com/KeepsakeAutomation/Nesting/blob/master/img/triangle_edge.png" width="500" height="250">
-</p>
+</p>  
 
 ### Flowchart for the modules created presently:  
  __1) Flow chart for extraction of coordinates and/or creation of shapes:__    
