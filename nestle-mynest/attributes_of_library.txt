@@ -1,0 +1,31 @@
+Attrubutes of library for Reference!!!!
+
+1) functions.sheet
+2) functions.horizontal_checking
+3) functions.clockwise_list
+4) functions.area_at_the_left_of_given_piece
+5) functions.vertical_checking
+6) functions.side
+7) functions.is_point_in_closed_segment
+8) functions.closed_segment_intersect
+9) functions.is_point_in_closed_segment_vertical
+10) functions.minimum_x_coordinate
+11) functions.maximum_x_coordinate
+12) functions.minimum_y_coordinate
+13) functions.maximum_y_coordinate
+14) functions.intersection_of_shapes
+15) functions.arg_shapes
+16) functions.image
+17) functions.nested_shapes_coordinates
+18) functions.circle
+19) functions.triangle
+20) functions.square
+21) functions.rectangle
+22) functions.pentagon
+23) functions.hexagon
+24) functions.polygon
+25) functions.freecad_nesting
+26) functions.nested_shapes_coordinates_eff
+27) gravity_approach
+28) print_func_1
+29) print_func_2
