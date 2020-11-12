@@ -1,0 +1,5 @@
+matplotlib
+svglib
+reportlab
+pathlib
+setuptools
