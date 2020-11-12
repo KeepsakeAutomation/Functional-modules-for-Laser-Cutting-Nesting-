@@ -1,6 +1,6 @@
 # 																											Modules for Laser Cutting
 
-****To Install our Library, use this command:****  
+***To Install our Library, use this command:***  
  > pip install nestle-mynest  
 
 This is a repository containing certain modules required for laser cutting. The code is completely written in python.  
