@@ -19,7 +19,7 @@ from math import sqrt, sin, cos, pi, asin
 # All of the required functions at one place
 
 
-def sheet(length_sheet, width_sheet):
+def sheet(length_sheet, width_sheet): #gives area of sheet
     vertices_sheet = [(0, 0, 0), (int(length_sheet), 0, 0), (int(length_sheet), (int(width_sheet)), 0), (0, (int(width_sheet)), 0)]
     sheet_area = 0
     for i in range(len(vertices_sheet)):
@@ -129,10 +129,8 @@ def side(a, b, c):
     return 1 if d > 0 else (-1 if d < 0 else 0)
 
 
-def is_point_in_closed_segment(a, b, c):
-    """ Returns True if c is inside closed segment, False otherwise.
-        a, b, c are expected to be collinear
-    """
+def is_point_in_closed_segment(a, b, c): # Returns True if c is inside closed segment, False otherwise. a, b, c are expected to be collinear
+
     if a[0] < b[0]:
         return a[0] <= c[0] and c[0] <= b[0]
     if b[0] < a[0]:
@@ -146,9 +144,7 @@ def is_point_in_closed_segment(a, b, c):
     return a[0] == c[0] and a[1] == c[1]
 
 
-def closed_segment_intersect(a, b, c, d):
-    """ Verifies if closed segments a, b, c, d do intersect.
-    """
+def closed_segment_intersect(a, b, c, d): # Verifies if closed segments a, b, c, d do intersect.
     if a == b:
         return a == c or a == d
     if c == d:
@@ -176,10 +172,7 @@ def closed_segment_intersect(a, b, c, d):
     return True
 
 
-def is_point_in_closed_segment_vertical(a, b, c):
-    """ Returns True if c is inside closed segment, False otherwise.
-        a, b, c are expected to be collinear
-    """
+def is_point_in_closed_segment_vertical(a, b, c): # Returns True if c is inside closed segment, False otherwise. a, b, c are expected to be collinear
     if a[0] < b[0]:
         return a[0] < c[0] and c[0] < b[0]
     if b[0] < a[0]:
@@ -193,7 +186,7 @@ def is_point_in_closed_segment_vertical(a, b, c):
     return a[0] == c[0] and a[1] == c[1]
 
 
-def minimum_x_coordinate(list_shape1):
+def minimum_x_coordinate(list_shape1): #
     for i in range(len(list_shape1)):
         if i == 0:
             min_x = list_shape1[0][0]
@@ -203,7 +196,7 @@ def minimum_x_coordinate(list_shape1):
     return min_x
 
 
-def maximum_x_coordinate(list_1):
+def maximum_x_coordinate(list_1): #
     for i in range(len(list_1)):
         if i == 0:
             max_x = list_1[0][0]
@@ -213,7 +206,7 @@ def maximum_x_coordinate(list_1):
     return max_x
 
 
-def minimum_y_coordinate(list_2):
+def minimum_y_coordinate(list_2): #
     for i in range(len(list_2)):
         if i == 0:
             min_y = list_2[0][1]
@@ -223,7 +216,7 @@ def minimum_y_coordinate(list_2):
     return min_y
 
 
-def maximum_y_coordinate(list_2):
+def maximum_y_coordinate(list_2): #
     for i in range(len(list_2)):
         if i == 0:
             max_y = list_2[0][1]
@@ -304,7 +297,7 @@ def intersection_of_shapes(list_shape1, list_shape2):
         return False
 
 
-def arg_shapes(list2,length_sheet,width_sheet):
+def arg_shapes(list2, length_sheet, width_sheet):  # placing shapes on top right corner above the sheet
     list4 = []
     for i in range(len(list2)):
         list3 = []
@@ -320,7 +313,7 @@ def arg_shapes(list2,length_sheet,width_sheet):
     return list4
 
 
-def image(img, contour_type):
+def image(img, contour_type):  # processing the image file type and extracting coordinates from the image
     # convert to RGB
     scale_percent = 26.46  # percent of original size
     width = int(img.shape[1] * scale_percent / 100)
@@ -343,7 +336,7 @@ def image(img, contour_type):
 
     if contour_type == 1:
         # find the contours from the thresholded image
-        contours, hierarchy = cv2.findContours(binary, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE) # cv2.RETR_CCOMP cv2.RETR_TREE cv2.RETR_EXTERNAL
+        contours, hierarchy = cv2.findContours(binary, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
         for i in range(len(hierarchy)):
             list_of_hierarchy = []
@@ -441,7 +434,7 @@ def image(img, contour_type):
         return print(" You have entered an invalid choice ")
 
 
-def nested_shapes_coordinates(new_vertices_other_shapes):
+def nested_shapes_coordinates(new_vertices_other_shapes):  # calculation for nesting algorithm
     left_shape = []
     right_shape = []
     new_vertices_other_shapes_clockwise = []
@@ -628,14 +621,13 @@ def nested_shapes_coordinates(new_vertices_other_shapes):
     return vertices_nested_again_shapes
 
 
-def circle(radius, length_sheet, width_sheet):
+def circle(radius, length_sheet, width_sheet):  # Developing a polygon which contains 360 sides and also resembles circle completely
     Circle_shape = []
     angle = 1
     times = 360 / angle
     x = radius
     y = radius
     theta = 0
-    # Developing a polygon which contains 360 sides and also resembles circle completely
     for i in range(int(times)):
         point_circle = (round(int(length_sheet) + (x + ((radius) * sin(theta * (pi / 180)))) - (2 * radius), 6),
                         round(int(width_sheet) + (y + ((radius) * cos(theta * (pi / 180)))), 6), 0)
@@ -644,7 +636,7 @@ def circle(radius, length_sheet, width_sheet):
     return Circle_shape
 
 
-def triangle(temp1_triangle, temp2_triangle, temp3_triangle, length_sheet, width_sheet):
+def triangle(temp1_triangle, temp2_triangle, temp3_triangle, length_sheet, width_sheet):  # Developing all types of Triangle
     # Equilateral Triangle
     if temp1_triangle == temp2_triangle == temp3_triangle:
         Triangle_shape = [(int(length_sheet) - temp2_triangle, int(width_sheet), 0),
@@ -698,21 +690,21 @@ def triangle(temp1_triangle, temp2_triangle, temp3_triangle, length_sheet, width
 
 
 
-def square(Square, length_sheet, width_sheet):
+def square(Square, length_sheet, width_sheet):  # Developing square
     Square_shape = [(int(length_sheet) - Square, int(width_sheet), 0),
                     (int(length_sheet) - Square, Square + int(width_sheet), 0),
                     (int(length_sheet), Square + int(width_sheet), 0), (int(length_sheet), int(width_sheet), 0)]
     return Square_shape
 
 
-def rectangle(Rect_length, Rect_width, length_sheet, width_sheet):
+def rectangle(Rect_length, Rect_width, length_sheet, width_sheet):  # Developing rectangle
     Rectangle_shape = [(int(length_sheet) - Rect_length, int(width_sheet), 0),
                        (int(length_sheet) - Rect_length, Rect_width + int(width_sheet), 0),
                        (int(length_sheet), Rect_width + int(width_sheet), 0), (int(length_sheet), int(width_sheet), 0)]
     return Rectangle_shape
 
 
-def pentagon(length_Pentagon, length_sheet, width_sheet):
+def pentagon(length_Pentagon, length_sheet, width_sheet):  # Developing pentagon
     # Calculation for pentagon
     Pentagon_shape = [(int(length_sheet) + (round(length_Pentagon * cos((2 * pi) / 5), 2)) - (
         round((2 * length_Pentagon * cos((2 * pi) / 5)) + length_Pentagon, 2)), int(width_sheet), 0),
@@ -734,7 +726,7 @@ def pentagon(length_Pentagon, length_sheet, width_sheet):
     return Pentagon_shape
 
 
-def hexagon(length_Hexagon, length_sheet, width_sheet):
+def hexagon(length_Hexagon, length_sheet, width_sheet):  # Developing hexagon
     Hexagon_shape = [(int(length_sheet) + (round(length_Hexagon * cos(pi / 6), 2)) - (
         round(length_Hexagon * 2 * cos(pi / 6), 2)), int(width_sheet), 0),
                      (int(length_sheet), round(length_Hexagon * sin(pi / 6), 2) + int(width_sheet), 0),
@@ -751,7 +743,7 @@ def hexagon(length_Hexagon, length_sheet, width_sheet):
     return Hexagon_shape
 
 
-def polygon(Polygon_shape, length_sheet, width_sheet):
+def polygon(Polygon_shape, length_sheet, width_sheet):  # Developing polygon
     Polygon_shape_final = []
     minimum_x = minimum_x_coordinate(Polygon_shape)
     maximum_x = maximum_x_coordinate(Polygon_shape)
@@ -766,7 +758,7 @@ def polygon(Polygon_shape, length_sheet, width_sheet):
 
 
 
-def freecad_nesting(new_vertices_shapes,length_sheet,width_sheet, freecad_file_address) :
+def freecad_nesting(new_vertices_shapes,length_sheet,width_sheet, freecad_file_address) :  # creating Macro file in freecad
     # Adding the requisite data to the macro file of FreeCAD
     file_object = open(freecad_file_address, "w+")
     file_object.write("#Import the library files \n"
@@ -794,7 +786,7 @@ def freecad_nesting(new_vertices_shapes,length_sheet,width_sheet, freecad_file_a
     file_object.close()
     return print("Macro file has been updated/created")
 
-def nested_shapes_coordinates_eff(new_vertices_other_shapes):
+def nested_shapes_coordinates_eff(new_vertices_other_shapes):  # calculation for nesting algorithm
     left_shape = []
     right_shape = []
     bottom_shape = []
@@ -869,196 +861,8 @@ def nested_shapes_coordinates_eff(new_vertices_other_shapes):
         vertices_nested_again_shapes.append(right_shape_nested)
     return vertices_nested_again_shapes
 
-# def nested_shapes_coordinates_eff(new_vertices_other_shapes):
-#     left_shape = []
-#     right_shape = []
-#     bottom_shape = []
-#     top_shape = []
-#     new_vertices_other_shapes_clockwise = []
-#
-#     for i in range(len(new_vertices_other_shapes)):
-#         new_vertices_other_shapes_clockwise.append(clockwise_list(new_vertices_other_shapes[i]))
-#     new_vertices_other_shapes = new_vertices_other_shapes_clockwise
-#
-#     vertices_nested_again_shapes = []
-#     for i in range(len(new_vertices_other_shapes)):
-#         right_shape = new_vertices_other_shapes[i]
-#         max_y = maximum_y_coordinate(right_shape)
-#         min_y = minimum_y_coordinate(right_shape)
-#         min_x = minimum_x_coordinate(right_shape)
-#         max_x = maximum_x_coordinate(right_shape)
-#         left_side_coordinates = []
-#         for i in range(len(vertices_nested_again_shapes)):
-#             points_of_left_shape = []
-#             if right_shape == vertices_nested_again_shapes[i]:
-#                 continue
-#             for j in range(len(vertices_nested_again_shapes[i])):
-#                 if vertices_nested_again_shapes[i][j][0] <= min_x and vertices_nested_again_shapes[i][j][1] <= max_y and \
-#                         vertices_nested_again_shapes[i][j][1] >= min_y:
-#                     points_of_left_shape.append(vertices_nested_again_shapes[i][j])
-#             if len(points_of_left_shape) != 0:
-#                 left_side_coordinates.append(vertices_nested_again_shapes[i])
-#
-#         if len(left_side_coordinates) == 0 or len(left_side_coordinates) != 0:
-#             var_1 = 0
-#             var_3 = (-1, -1, -1)
-#             var_6 = (-1, -1, -1)
-#             var_4 = 10000
-#             for i in range(len(vertices_nested_again_shapes)):
-#                 for j in range(len(vertices_nested_again_shapes[i])):
-#                     if vertices_nested_again_shapes[i][j][1] <= min_y and vertices_nested_again_shapes[i][j][0] <= min_x:
-#                         var_2 = vertices_nested_again_shapes[i][j]
-#                         if var_2[1] > var_1:
-#                             var_1 = var_2[1]
-#                             var_3 = var_2
-#                     if vertices_nested_again_shapes[i][j][1] >= max_y and vertices_nested_again_shapes[i][j][0] <= min_x:
-#                         var_5 = vertices_nested_again_shapes[i][j]
-#                         if var_5[1] < var_4:
-#                             var_4 = var_5[1]
-#                             var_6 = var_5
-#             if var_3 == (-1, -1, -1) :
-#                 left_side_coordinates = []
-#             else:
-#                 for i in range(len(vertices_nested_again_shapes)):
-#                     for j in range(len(vertices_nested_again_shapes[i])):
-#                         if var_3 == vertices_nested_again_shapes[i][j] or var_6 == vertices_nested_again_shapes[i][j]:
-#                             left_side_coordinates.append(vertices_nested_again_shapes[i])
-#                             break
-#
-#         slope_points = []
-#         for j in range(len(left_side_coordinates)):
-#             for i in range(len(left_side_coordinates[j])):
-#                 if i != len(left_side_coordinates[j]) - 1:
-#                     ax1 = round(left_side_coordinates[j][i][0], 1)
-#                     ay1 = round(left_side_coordinates[j][i][1], 1)
-#                     ax2 = round(left_side_coordinates[j][i + 1][0], 1)
-#                     ay2 = round(left_side_coordinates[j][i + 1][1], 1)
-#                 else:
-#                     ax1 = round(left_side_coordinates[j][i][0], 1)
-#                     ay1 = round(left_side_coordinates[j][i][1], 1)
-#                     ax2 = round(left_side_coordinates[j][0][0], 1)
-#                     ay2 = round(left_side_coordinates[j][0][1], 1)
-#                 if ax1 == ax2 and ay1 == ay2:
-#                     continue
-#                 elif ay1 == ay2:
-#                     if ax1 < ax2:
-#                         inc_value = ax1
-#                         while inc_value != ax2:
-#                             inc_value = round(inc_value + 0.1, 1)
-#                             slope_points.append((inc_value, ay1, 0))
-#                     else:
-#                         inc_value = ax1
-#                         while inc_value != ax2:
-#                             inc_value = round(inc_value - 0.1, 1)
-#                             slope_points.append((inc_value, ay1, 0))
-#                 elif ax1 == ax2:
-#                     if ay1 < ay2:
-#                         inc_value = ay1
-#                         while inc_value != ay2:
-#                             inc_value = round(inc_value + 0.1, 1)
-#                             slope_points.append((ax1, inc_value, 0))
-#                     else:
-#                         inc_value = ay1
-#                         while inc_value != ay2:
-#                             inc_value = round(inc_value - 0.1, 1)
-#                             slope_points.append((ax1, inc_value, 0))
-#                 elif ax1 != ax2 or ay1 != ay2:
-#                     slope = (ay2 - ay1) / (ax2 - ax1)
-#                     inc_value = ay1
-#                     if ay2 > ay1:
-#                         while (round(float(inc_value), 1) != ay2):
-#                             inc_value = round(inc_value + 0.1, 1)
-#                             obt_value = round(float((inc_value - ay1 + (slope * ax1)) / slope), 1)
-#                             slope_points.append((obt_value, inc_value, 0))
-#                     else:
-#                         while (round(float(inc_value), 1) != ay2):
-#                             inc_value = round(inc_value - 0.1, 1)
-#                             obt_value = round(float((inc_value - ay1 + (slope * ax1)) / slope), 1)
-#                             slope_points.append((obt_value, inc_value, 0))
-#
-#         x_for_right_shape ,y_for_right_shape= vertical_checking(right_shape)
-#         min_points = area_at_the_left_of_given_piece(right_shape,x_for_right_shape,y_for_right_shape)
-#
-#         left_side_coordinates = []
-#         for i in range(len(min_points) - 1):
-#             ax1 = round(min_points[i][0], 1)
-#             ay1 = round(min_points[i][1], 1)
-#             ax2 = round(min_points[i + 1][0], 1)
-#             ay2 = round(min_points[i + 1][1], 1)
-#             if ax1 == ax2 and ay1 == ay2:
-#                 continue
-#             elif ay1 == ay2:
-#                 if ax1 < ax2:
-#                     inc_value = ax1
-#                     while inc_value != ax2:
-#                         left_side_coordinates.append((inc_value, ay1, 0))
-#                         inc_value = round(inc_value + 0.1, 1)
-#                     left_side_coordinates.append((ax2,ay1,0))
-#                 else:
-#                     inc_value = ax1
-#                     while inc_value != ax2:
-#                         left_side_coordinates.append((inc_value, ay1, 0))
-#                         inc_value = round(inc_value - 0.1, 1)
-#                     left_side_coordinates.append((ax2, ay1, 0))
-#             elif ax1 == ax2:
-#                 if ay1 < ay2:
-#                     inc_value = ay1
-#                     left_side_coordinates.append((ax1,ay1,0))
-#                     while inc_value != ay2:
-#                         inc_value = round(inc_value + 0.1, 1)
-#                         left_side_coordinates.append((ax1, inc_value, 0))
-#                 else:
-#                     inc_value = ay1
-#                     left_side_coordinates.append((ax1,ay1,0))
-#                     while inc_value != ay2:
-#                         inc_value = round(inc_value - 0.1, 1)
-#                         left_side_coordinates.append((ax1, inc_value, 0))
-#             elif ax1 != ax2 or ay1 != ay2:
-#                 slope = (ay2 - ay1) / (ax2 - ax1)
-#                 inc_value = ax1
-#                 if ax2 > ax1:
-#                     left_side_coordinates.append((ax1,ay1,0))
-#                     while (round(float(inc_value), 1) != ax2):
-#                         inc_value = round(inc_value + 0.1, 1)
-#                         obt_value = round(float((slope * (inc_value - ax1)) + ay1), 1)
-#                         left_side_coordinates.append((inc_value, obt_value, 0))
-#                 else:
-#                     left_side_coordinates.append((ax1,ay1,0))
-#                     while (round(float(inc_value), 1) != ax2):
-#                         inc_value = round(inc_value - 0.1, 1)
-#                         obt_value = round(float((slope * (inc_value - ax1)) + ay1), 1)
-#                         left_side_coordinates.append((inc_value, obt_value, 0))
-#
-#
-#         short_distances = []
-#         for i in range(len(slope_points)):
-#             y_slope_point = round(slope_points[i][1], 1)
-#             x_slope_point = round(slope_points[i][0], 1)
-#             for j in range(len(left_side_coordinates)):
-#                 y_min_point = round(left_side_coordinates[j][1], 1)
-#                 x_min_point = round(left_side_coordinates[j][0], 1)
-#                 if y_min_point == y_slope_point:
-#                     short_distance = round(x_min_point - x_slope_point,1)
-#                     short_distances.append(short_distance)
-#
-#         shortest_distance_x = min_x
-#         for i in range(len(short_distances)):
-#             if i == 0:
-#                 shortest_distance_x = short_distances[i]
-#             if short_distances[i] < shortest_distance_x:
-#                 shortest_distance_x = short_distances[i]
-#
-#         right_shape_nested = []
-#         for i in range(len(right_shape)):
-#             if shortest_distance_x == 0:
-#                 a = right_shape[i][0] + 1
-#             else:
-#                 a = right_shape[i][0] - (shortest_distance_x - 1)
-#             right_shape_nested.append((a, right_shape[i][1], 0))
-#         vertices_nested_again_shapes.append(right_shape_nested)
-#     return vertices_nested_again_shapes
 
-def gravity_approach(length_sheet, width_sheet, new_vertices_shapes, arranged_groups, invalid_shapes):
+def gravity_approach(length_sheet, width_sheet, new_vertices_shapes, arranged_groups, invalid_shapes):  # main nesting calculation function
     new_vertices_other_shapes = []
     maximum_y_for_other_shape_for_new_column = 0
     maximum_y_for_other_shape_for_current_column = 0
@@ -1171,7 +975,7 @@ def gravity_approach(length_sheet, width_sheet, new_vertices_shapes, arranged_gr
     return new_vertices_other_shapes
 
 
-def print_func_1(new_vertices_shapes, invalid_shapes, grouped_nested_shapes):
+def print_func_1(new_vertices_shapes, invalid_shapes, grouped_nested_shapes): # function to print necessary statements for grouped shapes
     if len(invalid_shapes) == 1 and len(new_vertices_shapes) != 1:
         print("There is an unplaced shape and", len(new_vertices_shapes),
               "shapes have been placed in the sheet successfully.")
@@ -1190,7 +994,7 @@ def print_func_1(new_vertices_shapes, invalid_shapes, grouped_nested_shapes):
     print("-----------------------------------------------")
 
 
-def print_func_2(new_vertices_shapes, invalid_shapes):
+def print_func_2(new_vertices_shapes, invalid_shapes):  # function to print necessary statements for ungrouped shapes
     if len(invalid_shapes) == 1 and len(new_vertices_shapes) != 1:
         print("There is an unplaced shape and", len(new_vertices_shapes),
               "shapes have been placed in the sheet successfully.")
@@ -1209,7 +1013,7 @@ def print_func_2(new_vertices_shapes, invalid_shapes):
     print("-----------------------------------------------")
 
 
-def dxf_calculations(msp, length_sheet, width_sheet):
+def dxf_calculations(msp, length_sheet, width_sheet):  # function to extract coordinates from dxf drawings and their calculations
     list_for_start_end_points = []
     vertices_shapes_circle = []
     polyline = 0
@@ -1463,17 +1267,14 @@ def dxf_calculations(msp, length_sheet, width_sheet):
     plt.show()
     return vertices_shapes
 
-def anticlockwise_list(list_shape2):
+def anticlockwise_list(list_shape2):  # it converts clockwise list to anti-clockwise list
     list_shape1 = []
     for i in range(len(list_shape2)):
-        list_shape1.append(list_shape2[len(list_shape2) - 1 - i])  # list_shape1 = clockwise arrangement of co-ordinates
+        list_shape1.append(list_shape2[len(list_shape2) - 1 - i])
     return list_shape1
 
 
-def truncate(number, decimals=0):
-    """
-    Returns a value truncated to a specific number of decimal places.
-    """
+def truncate(number, decimals=0):  # Returns a value truncated to a specific number of decimal places.
     if not isinstance(decimals, int):
         raise TypeError("decimal places must be an integer.")
     elif decimals < 0:
