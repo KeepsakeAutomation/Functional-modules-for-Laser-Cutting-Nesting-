@@ -11,9 +11,9 @@ from matplotlib.patches import Polygon
 
 
 
-# ---------------------------------------------------------------------------------------------------------------#
+# --------------------------------------------------------------------------------------------------------------- #
 # PART-1: CREATING THE SHAPES AND SHEET WITH THE HELP OF THEIR DIMENSIONS
-# ---------------------------------------------------------------------------------------------------------------#
+# --------------------------------------------------------------------------------------------------------------- #
 # Developing the sheet through its dimensions
 length_sheet = int(input("Enter the length for sheet: "))
 width_sheet = int(input("Enter the width for sheet: "))
@@ -198,8 +198,6 @@ if (a == 1 and (b == 1 or b == 2)) or a == 3:
             all_shapes_length.append(shapes_length)
             print("all_shapes_length = ",all_shapes_length)
 
-        # print(all_shapes_length)
-        # print(groups_list)
         print("-----------------------------------------------")
         arranged_groups = []
         arranged_groups = functions.arg_shapes(groups_list, length_sheet, width_sheet)
@@ -254,7 +252,6 @@ if (a == 1 and (b == 1 or b == 2)) or a == 3:
         maximum_y_for_other_shape_for_current_column = 0
         maximum_x_of_previous_column = 0
         first_shape_placed = 0
-        # print(vertices_for_other_shapes)
         new_vertices_other_shapes = functions.gravity_approach(length_sheet, width_sheet, new_vertices_shapes,
                                                                vertices_for_other_shapes, invalid_shapes)
         new_vertices_other_shapes_final = functions.nested_shapes_coordinates_eff(new_vertices_other_shapes)
@@ -262,8 +259,6 @@ if (a == 1 and (b == 1 or b == 2)) or a == 3:
         # Appending the shapes from the other shapes' list to the main and final list of vertices of the shapes to be placed
         for n in range(len(new_vertices_other_shapes_final)):
             new_vertices_shapes.append(new_vertices_other_shapes_final[n])
-        # print("new_vertices_other_shapes : ",new_vertices_other_shapes)
-        # print("new_vertices_shapes :",new_vertices_shapes)
         # ---------------------------------------------------------------------------------------------------------------#
         # Printing all of the required outputs obtained from the given inputs
         print("-----------------------------------------------")
@@ -285,7 +280,6 @@ if a == 2:
     maximum_y_for_other_shape_for_current_column = 0
     maximum_x_of_previous_column = 0
     first_shape_placed = 0
-    # print(vertices_for_other_shapes)
     new_vertices_other_shapes = functions.gravity_approach(length_sheet, width_sheet, new_vertices_shapes,
                                                            vertices_for_other_shapes, invalid_shapes)
     new_vertices_other_shapes_final = functions.nested_shapes_coordinates_eff(new_vertices_other_shapes)
@@ -293,8 +287,6 @@ if a == 2:
     # Appending the shapes from the other shapes' list to the main and final list of vertices of the shapes to be placed
     for n in range(len(new_vertices_other_shapes_final)):
         new_vertices_shapes.append(new_vertices_other_shapes_final[n])
-    # print("new_vertices_other_shapes : ",new_vertices_other_shapes)
-    # print("new_vertices_shapes :",new_vertices_shapes)
     # ---------------------------------------------------------------------------------------------------------------#
     # Printing all of the required outputs obtained from the given inputs
     print("-----------------------------------------------")
