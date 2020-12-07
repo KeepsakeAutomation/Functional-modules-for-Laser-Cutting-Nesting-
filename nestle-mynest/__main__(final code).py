@@ -294,7 +294,3 @@ if a == 2:
     freecad_file_address = input("Please enter the freecad file path: ")
     code_for_freecad = functions.freecad_nesting(new_vertices_shapes, length_sheet, width_sheet, freecad_file_address)
 # ---------------------------------------------------------------------------------------------------------------#
-# D:\TIRTH\Keepsake_laser_cutting_project\Phase_2\test_shapes
-# C:\Users\TIRTH\AppData\Roaming\FreeCAD\Macro\Visualisation_Code.FCMacro
-# C:/Users/Harshil/AppData/Roaming/FreeCAD/Macro/Visualisation_Code.FCMacro
-# D:/TIRTH/Keepsake_laser_cutting_project/Phase_2/test_shapes/geometrical_shapes/mega_shape.dxf
