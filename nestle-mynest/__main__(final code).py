@@ -25,7 +25,7 @@ if a == 1:
     b = int(input("Enter the extension of image \n 1:.svg \n 2:Format of images(.png,.jpeg,.tiff) \n"))
     contour_type = int(input(" 1) unfilled shapes \n 2) filled shapes \n"))
     if b == 1:
-        # CONVERSION
+        # CONVERSION 
         drawing = svg2rlg(input("Enter path: "))
         renderPM.drawToFile(drawing, "nested_shape.png", fmt="PNG")
         print("conversion done")
@@ -112,7 +112,7 @@ elif a == 2:
             vertices_for_other_shapes.append(Polygon_shape_final)
             no_shape = no_shape + 1
 
-elif a == 3:
+elif a == 3:   # Calculations for parameters of DXF drawing file
     list_for_start_end_points = []
     file_path = input("Enter the path of .DXF File: ")
     dwg = ezdxf.readfile(file_path)
@@ -204,7 +204,7 @@ if (a == 1 and (b == 1 or b == 2)) or a == 3:
         progress_for_shape = 0
         new_vertices_shapes = []
         invalid_shapes = []
-        # Nesting the shapes using bottom-left approach
+        # Nesting the shapes using bottom-left approach AKA "GRAVITY APPROACH"
         new_vertices_other_shapes = functions.gravity_approach(length_sheet, width_sheet, new_vertices_shapes,
                                                                arranged_groups, invalid_shapes)
         new_vertices_other_shapes = functions.nested_shapes_coordinates_eff(new_vertices_other_shapes)
